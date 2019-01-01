@@ -1,0 +1,8 @@
+prefix=/home/yus/Documents/ROS/my_project/install
+
+Name: lane_detect
+Description: Description of lane_detect
+Version: 0.0.0
+Cflags: -I/home/yus/Documents/ROS/my_project/install/include
+Libs: -L/home/yus/Documents/ROS/my_project/install/lib -lapi_lane_detection
+Requires: roscpp
