@@ -26,7 +26,7 @@ DetectLane::~DetectLane(){
 
 Point DetectLane::null = Point();
 
-void DetectLane::update(const Mat &img, double &angle, double &speed)
+void DetectLane::detect(const Mat &img, double &angle, double &speed)
 {
     // STAGE 2
     // gradient threshold
@@ -36,21 +36,19 @@ void DetectLane::update(const Mat &img, double &angle, double &speed)
         show_histogram_normal(img);
     }
 
-    Mat combined = apply_gradient_threshold(img);
-    // show_min_max("combined", combined);
+    Mat gray;
+    cvtColor(img, gray, CV_RGB2GRAY);
+
+    Mat bi_grad = apply_gradient_threshold(gray);
 
     // color threshold
-    Mat color_binary = apply_color_threshold(img);
-    // show_min_max("color_binary", color_binary);
+    Mat bi_color = apply_color_threshold(img);
 
     // combine color and gradient thresholds !!
-    Mat combined_binary = combine_threshold(combined, color_binary);
-    // show_min_max("combined_binary", combined_binary);
+    Mat combined_binary = combine_threshold(bi_grad, bi_color);
 
     // warping
     Mat binary_warped = warp(combined_binary);
-
-    // cout << binary_warped;
 
     // STAGE 3
     Mat histogram = get_histogram(binary_warped);
@@ -73,8 +71,8 @@ void DetectLane::update(const Mat &img, double &angle, double &speed)
 // add circles at 4 points in image
 Mat DetectLane::addPoints(const Mat &img, const array<Point2f,4> pts)
 {
-    Mat img_with_4pts ;
-    img.copyTo(img_with_4pts);
+    Mat img_with_4pts(img) ;
+    // img.copyTo(img_with_4pts);
     for( size_t i = 0; i < pts.size(); i++ )
     {
         int x = round(pts.at(i).x);
@@ -84,7 +82,7 @@ Mat DetectLane::addPoints(const Mat &img, const array<Point2f,4> pts)
     return img_with_4pts;
 }
 
-Mat addPoints(const Mat &img, vector<int> x, vector<int> y)
+Mat DetectLane::addPoints(const Mat &img, vector<int> x, vector<int> y)
 {
     Mat img_with_pts ;
     img.copyTo(img_with_pts);
@@ -99,6 +97,7 @@ Mat addPoints(const Mat &img, vector<int> x, vector<int> y)
 // warping
 Mat DetectLane::warp(const Mat &img)
 {
+    // convert to Point2f array
     Point2f src[4];
     for(int i = 0 ; i < 4; i++){
         src[i] = this->src.at(i);
@@ -140,20 +139,16 @@ void DetectLane::test_warp()
 
 /*====================STAGE 2=====================*/
 // Manual Bar
-void DetectLane::choosing_thresholds_manually(const Mat &img)
+void DetectLane::choosing_thresholds_manually()
 {
 
 }
 
 // absolute sobel threshold
-Mat DetectLane::abs_sobel_thresh(const Mat &img, char orient)
+Mat DetectLane::abs_sobel_thresh(const Mat &gray, char orient)
 {
-    Mat gray;
-    cvtColor(img, gray, CV_RGB2GRAY);
-
-    Mat sobel;
-
     // applying sobel filter corresponding to axis x or y
+    Mat sobel;
     if (orient == 'x'){
         // follow the x axis
         cv::Sobel(gray, sobel, CV_64F, 1, 0, sobel_kernel);
@@ -188,17 +183,12 @@ Mat DetectLane::abs_sobel_thresh(const Mat &img, char orient)
     Mat grad_binary = grad_binary_thresh_max & grad_binary_thresh_min;
 
     return grad_binary;
-
 }
 
 // magnitude threshold
-Mat DetectLane::mag_thresh(const Mat &img)
+Mat DetectLane::mag_thresh(const Mat &gray)
 {
-    Mat gray;
-    cvtColor(img, gray, CV_RGB2GRAY);
-
     Mat sobelx, sobely;
-
     // applying sobel filter corresponding to axis x or y
     // follow the x axis
     cv::Sobel(gray, sobelx, CV_64F, 1, 0, sobel_kernel);
@@ -208,12 +198,6 @@ Mat DetectLane::mag_thresh(const Mat &img)
     cv::Sobel(gray, sobely, CV_64F, 0, 1, sobel_kernel);
     // src, dst, ddepth, x-axis, y-axis, ksize
 
-    // Mat sq_sobelx, sq_sobely;
-    // cv::pow(sobelx, 2, sq_sobelx);
-    // cv::pow(sobely, 2, sq_sobely);
-    //// src, power, dst ;;;;; dst = src ^ power
-    // cv::sqrt(Mat(sq_sobelx + sq_sobely), abs_sobel);
-
     //    = sqrt( sobelx ^ 2 + sobely ^ 2)
     Mat abs_sobel;
     cv::magnitude(sobelx, sobely, abs_sobel);
@@ -221,9 +205,6 @@ Mat DetectLane::mag_thresh(const Mat &img)
     // after applying kernel, value of each pixel can be exceed 255 or lower than 0
     // so we need to get the absolute value and scale it down to the range 0-255
     Mat scaled_sobel = abs_sobel * 255 / find_max(abs_sobel);
-
-    int w = img.size().width;
-    int h = img.size().height;
 
     Mat mag_binary_thresh_max, mag_binary_thresh_min;
 
@@ -244,13 +225,9 @@ Mat DetectLane::mag_thresh(const Mat &img)
     return mag_binary;
 }
 
-Mat DetectLane::dir_thresh(const Mat &img)
+Mat DetectLane::dir_thresh(const Mat &gray)
 {
-    Mat gray;
-    cvtColor(img, gray, CV_RGB2GRAY);
-
     Mat sobelx, sobely;
-
     // applying sobel filter corresponding to axis x or y
     // follow the x axis
     cv::Sobel(gray, sobelx, CV_8UC1, 1, 0, sobel_kernel);
@@ -267,7 +244,6 @@ Mat DetectLane::dir_thresh(const Mat &img)
     int width = sobelx.size().width;
 
     Mat grad_dir = Mat::zeros(height,width, CV_64F);
-
     // arctan(y/x)
     for(int i = 0; i < height; i++)
     {
@@ -301,48 +277,24 @@ Mat DetectLane::dir_thresh(const Mat &img)
     return dir_binary;
 }
 
-Mat DetectLane::apply_gradient_threshold(const Mat &img)
+Mat DetectLane::apply_gradient_threshold(const Mat &gray)
 {
-  // sobel  x-axis, y-axis
+    // sobel  x-axis, y-axis
     abs_sobel_thresh_range = abs_sobel_thresh_range_x;
-    Mat gradx = abs_sobel_thresh(img, 'x');
+    Mat gradx = abs_sobel_thresh(gray, 'x');
     abs_sobel_thresh_range = abs_sobel_thresh_range_y;
-    Mat grady = abs_sobel_thresh(img, 'y');
+    Mat grady = abs_sobel_thresh(gray, 'y');
 
     // magnitude
-    Mat mag_binary = mag_thresh(img);
+    Mat mag_binary = mag_thresh(gray);
 
     // direction (angle)
-    Mat dir_binary = dir_thresh(img);
+    Mat dir_binary = dir_thresh(gray);
 
-    Mat combined = (gradx & grady) | (mag_binary & dir_binary);
+    // combine magnitude and direction (thresholded)
+    Mat bi_grad = (gradx & grady) | (mag_binary & dir_binary);
 
-    if (is_test)
-    {
-        plot_binary_img(" Stage 2 - After applying gradient threshold ", combined);
-    }
-
-    return combined ;
-
-}
-
-void DetectLane::test_apply_gradient_threshold(){
-    Mat img = cv::imread("/home/yus/Documents/Pic/first_frame.png");
-    Mat bi_abs_sobel = abs_sobel_thresh(img, 'x');
-    cv::imshow("binary absolute sobel", bi_abs_sobel);
-    cv::waitKey(0);
-
-    Mat bi_mag = mag_thresh(img);
-    imshow("binary magnitude", bi_mag);
-    waitKey(0);
-
-    Mat bi_dir = dir_thresh(img);
-    imshow("binary direction", bi_dir);
-    waitKey(0);
-
-    Mat combined = apply_gradient_threshold(img);
-    imshow("gradient thresholds", combined);
-    waitKey(0);
+    return bi_grad ;
 }
 
 Mat DetectLane::apply_color_threshold(const Mat &img)
@@ -360,19 +312,10 @@ Mat DetectLane::apply_color_threshold(const Mat &img)
     return rs;
 }
 
-void DetectLane::test_apply_color_threshold()
-{
-
-}
-
 Mat DetectLane::combine_threshold(const Mat &s_binary,
                       const Mat &combined)
 {
     Mat rs = (s_binary | combined);
-    if (is_test)
-    {
-        plot_binary_img(" Stage 2 - Combine all threshold", rs);
-    }
     return rs ;
 }
 
@@ -568,32 +511,6 @@ bool DetectLane::slide_window(const Mat &binary_warped,
 
     return true;
 
-}
-
-void DetectLane::test_slide_window(const Mat &img)
-{
-    Mat combined = apply_gradient_threshold(img);
-
-    Mat binary_warped = warp(combined);
-    // imshow("binary warped", binary_warped);
-    // waitKey();
-
-    Mat histogram = get_histogram(binary_warped);
-
-    vector<Point> left_plot, right_plot;
-    vector<double> left_fit, right_fit;
-    slide_window(binary_warped, histogram,
-                 left_plot, right_plot,
-                 left_fit, right_fit);
-
-    double angle = finding_angle_direction(binary_warped, left_fit,right_fit);
-
-    std::cout << " [INFO] " << angle << "\n";
-
-    // failed
-    // Mat original_img_with_lines = original_image_with_lines(img, left_plot, right_plot );
-    // imshow("Original image with lines", original_img_with_lines);
-    // waitKey();
 }
 
 // ==========================STAGE 4 ===============================
@@ -1292,7 +1209,7 @@ void DetectLane::videoProcess(string video_path, string out_img_path, int test_i
         if(iframe == test_i_frame){
             this->is_test = true;
         }
-        this->update(img, angle, speed);
+        this->detect(img, angle, speed);
         std::cout << " [INFO] angle = " << angle << ", speed =" << speed << "\n";
         if(iframe == test_i_frame){
             this->is_test = false;

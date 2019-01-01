@@ -10,9 +10,9 @@
 
 DetectLane *detect;
 CarControl *car;
-int skipFrame = 1;
 
-auto samplePic = cv::imread("/home/yus/Documents/Pic/abc.png");
+
+
 VideoWriter writer;
 
 double angle , speed ;

@@ -25,13 +25,28 @@ public:
     DetectLane();
     ~DetectLane();
 
+    /*
+    Width and height of input image , which is fixed size !
+    */
+    int w = 320;
+    int h = 240;
+
+    /*
+
+    */
     bool is_test = false;
     bool is_save_fit_lines = true;
     VideoWriter writer ;
 
-    void update(const Mat &img, double &angle, double &speed);
+    /*
+    Args:
+      img (3 channels) of size width w and heigh h
 
-    static Point null;
+    Returns:
+      angle: angle (in degree limited between (-50,50))
+      speed: speed
+    */
+    void detect(const Mat &img, double &angle, double &speed);
 
     // =============== STAGE 1 ===================
     // 4 chosen pts
@@ -42,23 +57,22 @@ public:
     Mat addPoints(const Mat &img, array<Point2f,4> pts);
     Mat addPoints(const Mat &img, vector<int> x, vector<int> y);
     Mat warp(const Mat &source);
-    void test_warp();
 
     // =============== STAGE 2 ===================
-    void choosing_thresholds_manually(const Mat &img);
+    void choosing_thresholds_manually(); // manual trackbar
 
     // absolute sobel threshold
     int sobel_kernel = 3;  // 3x3 sobel kernel matrix
     array<int,2> abs_sobel_thresh_range = {0,255}; // default for abs_sobel_thresh
-    Mat abs_sobel_thresh(const Mat &img, char orient); // orient = 'x' or 'y'
+    Mat abs_sobel_thresh(const Mat &gray, char orient); // orient = 'x' or 'y'
 
     // magnitude threshold
     array<int,2> mag_thresh_range = {30,100}; // {0,255}
-    Mat mag_thresh(const Mat &img);
+    Mat mag_thresh(const Mat &gray);
 
     // direction threshold
     array<float,2> dir_thresh_range = {0.7, 1.3}; // {0, M_PI/2}
-    Mat dir_thresh(const Mat &img);
+    Mat dir_thresh(const Mat &gray);
 
     // apply gradient threshold: combination of
     //    absolute sobel threshold,
@@ -66,8 +80,7 @@ public:
     //    direction threshold
     array<int,2> abs_sobel_thresh_range_x = {20,100};
     array<int,2> abs_sobel_thresh_range_y = {20,100};
-    Mat apply_gradient_threshold(const Mat &img);
-    void test_apply_gradient_threshold();
+    Mat apply_gradient_threshold(const Mat &gray);
 
     // apply color threshold
     float s_thresh_min = 0 ;
@@ -75,11 +88,9 @@ public:
     vector<double> color_thresh_low = {0,0,0};
     vector<double> color_thresh_high = {10,10,10};
     Mat apply_color_threshold(const Mat &img);
-    void test_apply_color_threshold();
 
     // combine both gradient threshold and color threshold with operator OR
-    Mat combine_threshold(const Mat &s_binary, const Mat &combined);
-    void test_combine_threshold();
+    Mat combine_threshold(const Mat &bi_grad, const Mat &bi_color);
 
     // ============== STAGE 3 ==================
     Mat get_histogram(const Mat &binary_warped);
