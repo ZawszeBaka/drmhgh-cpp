@@ -1,6 +1,6 @@
-#include "detectlane.h"
+#include "lanedetector.h"
 
-DetectLane::DetectLane() {
+LaneDetector::LaneDetector() {
     // cvCreateTrackbar("LowH", "Threshold", &minThreshold[0], 179);
     // cvCreateTrackbar("HighH", "Threshold", &maxThreshold[0], 179);
     //
@@ -20,13 +20,11 @@ DetectLane::DetectLane() {
 
 }
 
-DetectLane::~DetectLane(){
+LaneDetector::~LaneDetector(){
     if (is_save_fit_lines) writer.release();
 }
 
-Point DetectLane::null = Point();
-
-void DetectLane::detect(const Mat &img, double &angle, double &speed)
+void LaneDetector::detect(const Mat &img, double &angle, double &speed)
 {
     // STAGE 2
     // gradient threshold
@@ -37,7 +35,8 @@ void DetectLane::detect(const Mat &img, double &angle, double &speed)
     }
 
     Mat gray;
-    cvtColor(img, gray, CV_RGB2GRAY);
+    // cvtColor(img, gray, cv::CV_RGB2GRAY);
+    cvtColor(img, gray, COLOR_RGB2GRAY);
 
     Mat bi_grad = apply_gradient_threshold(gray);
 
@@ -69,7 +68,7 @@ void DetectLane::detect(const Mat &img, double &angle, double &speed)
 
 /*====================STAGE 1=====================*/
 // add circles at 4 points in image
-Mat DetectLane::addPoints(const Mat &img, const array<Point2f,4> pts)
+Mat LaneDetector::addPoints(const Mat &img, const array<Point2f,4> pts)
 {
     Mat img_with_4pts(img) ;
     // img.copyTo(img_with_4pts);
@@ -82,7 +81,7 @@ Mat DetectLane::addPoints(const Mat &img, const array<Point2f,4> pts)
     return img_with_4pts;
 }
 
-Mat DetectLane::addPoints(const Mat &img, vector<int> x, vector<int> y)
+Mat LaneDetector::addPoints(const Mat &img, vector<int> x, vector<int> y)
 {
     Mat img_with_pts ;
     img.copyTo(img_with_pts);
@@ -95,7 +94,7 @@ Mat DetectLane::addPoints(const Mat &img, vector<int> x, vector<int> y)
 }
 
 // warping
-Mat DetectLane::warp(const Mat &img)
+Mat LaneDetector::warp(const Mat &img)
 {
     // convert to Point2f array
     Point2f src[4];
@@ -124,28 +123,15 @@ Mat DetectLane::warp(const Mat &img)
     return warped_img;
 }
 
-// test warping
-void DetectLane::test_warp()
-{
-    Mat img = cv::imread("/home/yus/Documents/Pic/first_frame.png");
-    Mat warped_img = warp(img);
-    img = addPoints(img,src);
-    warped_img = addPoints(warped_img,dst);
-
-    imshow("test-original-img", img);
-    imshow("test-warped-img", warped_img);
-    waitKey();
-}
-
 /*====================STAGE 2=====================*/
 // Manual Bar
-void DetectLane::choosing_thresholds_manually()
+void LaneDetector::choosing_thresholds_manually()
 {
 
 }
 
 // absolute sobel threshold
-Mat DetectLane::abs_sobel_thresh(const Mat &gray, char orient)
+Mat LaneDetector::abs_sobel_thresh(const Mat &gray, char orient)
 {
     // applying sobel filter corresponding to axis x or y
     Mat sobel;
@@ -186,7 +172,7 @@ Mat DetectLane::abs_sobel_thresh(const Mat &gray, char orient)
 }
 
 // magnitude threshold
-Mat DetectLane::mag_thresh(const Mat &gray)
+Mat LaneDetector::mag_thresh(const Mat &gray)
 {
     Mat sobelx, sobely;
     // applying sobel filter corresponding to axis x or y
@@ -225,7 +211,7 @@ Mat DetectLane::mag_thresh(const Mat &gray)
     return mag_binary;
 }
 
-Mat DetectLane::dir_thresh(const Mat &gray)
+Mat LaneDetector::dir_thresh(const Mat &gray)
 {
     Mat sobelx, sobely;
     // applying sobel filter corresponding to axis x or y
@@ -277,7 +263,7 @@ Mat DetectLane::dir_thresh(const Mat &gray)
     return dir_binary;
 }
 
-Mat DetectLane::apply_gradient_threshold(const Mat &gray)
+Mat LaneDetector::apply_gradient_threshold(const Mat &gray)
 {
     // sobel  x-axis, y-axis
     abs_sobel_thresh_range = abs_sobel_thresh_range_x;
@@ -297,7 +283,7 @@ Mat DetectLane::apply_gradient_threshold(const Mat &gray)
     return bi_grad ;
 }
 
-Mat DetectLane::apply_color_threshold(const Mat &img)
+Mat LaneDetector::apply_color_threshold(const Mat &img)
 {
     Mat rs(img);
     GaussianBlur(img,img,Size(3,3),2);
@@ -312,7 +298,7 @@ Mat DetectLane::apply_color_threshold(const Mat &img)
     return rs;
 }
 
-Mat DetectLane::combine_threshold(const Mat &s_binary,
+Mat LaneDetector::combine_threshold(const Mat &s_binary,
                       const Mat &combined)
 {
     Mat rs = (s_binary | combined);
@@ -320,7 +306,7 @@ Mat DetectLane::combine_threshold(const Mat &s_binary,
 }
 
 // =================== STAGE 3  ============================//
-Mat DetectLane::get_histogram(const Mat &binary_warped)
+Mat LaneDetector::get_histogram(const Mat &binary_warped)
 {
     int width = binary_warped.size().width;
     int height = binary_warped.size().height;
@@ -338,7 +324,7 @@ Mat DetectLane::get_histogram(const Mat &binary_warped)
 
 }
 
-bool DetectLane::slide_window(const Mat &binary_warped,
+bool LaneDetector::slide_window(const Mat &binary_warped,
                               const Mat &histogram,
                               vector<Point> &out_left_plot,
                               vector<Point> &out_right_plot,
@@ -515,7 +501,7 @@ bool DetectLane::slide_window(const Mat &binary_warped,
 
 // ==========================STAGE 4 ===============================
 // draw detected lines in image
-Mat DetectLane::original_image_with_lines(Mat &img,
+Mat LaneDetector::original_image_with_lines(Mat &img,
                                           vector<Point> left_pts,
                                           vector<Point> right_pts)
 {
@@ -558,7 +544,7 @@ Mat DetectLane::original_image_with_lines(Mat &img,
 
 }
 
-double DetectLane::finding_angle_direction(Mat binary_img, vector<double> &left_coefs, vector<double> &right_coefs)
+double LaneDetector::finding_angle_direction(Mat binary_img, vector<double> &left_coefs, vector<double> &right_coefs)
 {
 
     int sz = left_coefs.size();
@@ -635,7 +621,7 @@ double DetectLane::finding_angle_direction(Mat binary_img, vector<double> &left_
 
 }
 
-double DetectLane::finding_angle_direction(Mat binary_img)
+double LaneDetector::finding_angle_direction(Mat binary_img)
 {
     double x1 = upper_center.x;
     double y1 = upper_center.y;
@@ -657,7 +643,7 @@ double DetectLane::finding_angle_direction(Mat binary_img)
 
 
 // =================== HELPER FUNCTIONS ============================//
-double DetectLane::find_max(Mat img)
+double LaneDetector::find_max(Mat img)
 {
       double minVal;
       double maxVal;
@@ -667,7 +653,7 @@ double DetectLane::find_max(Mat img)
       return maxVal;
 }
 
-double DetectLane::find_min(Mat img)
+double LaneDetector::find_min(Mat img)
 {
       double minVal;
       double maxVal;
@@ -677,12 +663,12 @@ double DetectLane::find_min(Mat img)
       return minVal;
 }
 
-void DetectLane::show_min_max(string name , Mat img)
+void LaneDetector::show_min_max(string name , Mat img)
 {
     std::cout << "  [INFO] Mat " << name << ", min = " << find_min(img) << ", max = " << find_max(img) << "\n";
 }
 
-Point DetectLane::arg_max(Mat img)
+Point LaneDetector::arg_max(Mat img)
 {
       double minVal;
       double maxVal;
@@ -692,7 +678,7 @@ Point DetectLane::arg_max(Mat img)
       return maxLoc;
 }
 
-Mat DetectLane::sum(Mat mat, char axis)
+Mat LaneDetector::sum(Mat mat, char axis)
 {
     int width = mat.size().width;
     int height = mat.size().height;
@@ -732,7 +718,7 @@ Mat DetectLane::sum(Mat mat, char axis)
     return result ;
 }
 
-Mat DetectLane::plot_histogram(Mat hist)
+Mat LaneDetector::plot_histogram(Mat hist)
 {
 
     hist.convertTo(hist, CV_64F, 1.0);
@@ -771,7 +757,7 @@ Mat DetectLane::plot_histogram(Mat hist)
     return histImage;
 }
 
-Mat DetectLane::dstack(const Mat &img)
+Mat LaneDetector::dstack(const Mat &img)
 {
     int height = img.size().height;
     int width = img.size().width;
@@ -802,7 +788,7 @@ Mat DetectLane::dstack(const Mat &img)
 
 }
 
-Mat DetectLane::findNonzero(Mat img)
+Mat LaneDetector::findNonzero(Mat img)
 {
     int height = img.size().height;
     int width = img.size().width;
@@ -828,7 +814,7 @@ Mat DetectLane::findNonzero(Mat img)
     return rs;
 }
 
-void DetectLane::show_mat_type(string name, Mat &img) {
+void LaneDetector::show_mat_type(string name, Mat &img) {
     string r;
 
     int type = img.type();
@@ -853,7 +839,7 @@ void DetectLane::show_mat_type(string name, Mat &img) {
     std::cout << " [INFO] Matrix " << name << " - " << r << "\n";
 }
 
-string DetectLane::get_mat_type(Mat &img)
+string LaneDetector::get_mat_type(Mat &img)
 {
     string r;
 
@@ -879,7 +865,7 @@ string DetectLane::get_mat_type(Mat &img)
     return r;
 }
 
-bool DetectLane::is_inside_box(int win_y_low, int win_y_high,
+bool LaneDetector::is_inside_box(int win_y_low, int win_y_high,
                                int win_x_low, int win_x_high,
                                Point p)
 {
@@ -891,7 +877,7 @@ bool DetectLane::is_inside_box(int win_y_low, int win_y_high,
     else return false;
 }
 
-vector<double> DetectLane::polyfit(vector<int> vecX, vector<int> vecY, int nDegree)
+vector<double> LaneDetector::polyfit(vector<int> vecX, vector<int> vecY, int nDegree)
 {
     // X and Y must be the same size
 
@@ -908,6 +894,7 @@ vector<double> DetectLane::polyfit(vector<int> vecX, vector<int> vecY, int nDegr
         cv::Vec4f linear_line; // (-n, m) normalized vector collinear to the line , (x0,y0)
 
         cv::fitLine(pts, linear_line, CV_DIST_L2, 1, 0.001, 0.001);
+        // cv::fitLine(pts, linear_line, CV__TEST_LE, 1, 0.001, 0.001);
 
         // mx + ny + c = 0
         double m = linear_line[1];
@@ -1008,7 +995,7 @@ vector<double> DetectLane::polyfit(vector<int> vecX, vector<int> vecY, int nDegr
 
 }
 
-Mat DetectLane::drawPolylines(Mat &img, vector<Point> pts)
+Mat LaneDetector::drawPolylines(Mat &img, vector<Point> pts)
 {
     int height = img.size().height;
     int sz = pts.size();
@@ -1025,7 +1012,7 @@ Mat DetectLane::drawPolylines(Mat &img, vector<Point> pts)
     return drew_img;
 }
 
-vector<Point> DetectLane::polyval(Mat &img, vector<double> coefs)
+vector<Point> LaneDetector::polyval(Mat &img, vector<double> coefs)
 {
 
     int sz = coefs.size();
@@ -1060,7 +1047,7 @@ vector<Point> DetectLane::polyval(Mat &img, vector<double> coefs)
     return rs;
 }
 
-vector<Point> DetectLane::polyval(Mat &img, vector<double> coefs, bool is_pol)
+vector<Point> LaneDetector::polyval(Mat &img, vector<double> coefs, bool is_pol)
 {
 
     int sz = coefs.size();
@@ -1077,7 +1064,7 @@ vector<Point> DetectLane::polyval(Mat &img, vector<double> coefs, bool is_pol)
     return rs;
 }
 
-void DetectLane::show_histogram_normal(const Mat &img)
+void LaneDetector::show_histogram_normal(const Mat &img)
 {
     vector<Mat> channels;
 
@@ -1133,7 +1120,7 @@ void DetectLane::show_histogram_normal(const Mat &img)
 
 }
 
-void DetectLane::plot_binary_img(string name, const Mat &img)
+void LaneDetector::plot_binary_img(string name, const Mat &img)
 {
     Mat plt_img(img);
     plt_img.convertTo(plt_img, CV_64F);
@@ -1141,7 +1128,7 @@ void DetectLane::plot_binary_img(string name, const Mat &img)
     waitKey();
 }
 
-void DetectLane::plot_binary_img(string name, const Mat &img, int wait_time)
+void LaneDetector::plot_binary_img(string name, const Mat &img, int wait_time)
 {
     Mat plt_img(img);
     plt_img.convertTo(plt_img, CV_64F);
@@ -1149,7 +1136,7 @@ void DetectLane::plot_binary_img(string name, const Mat &img, int wait_time)
     waitKey(wait_time);
 }
 
-void DetectLane::show_img_description(string name, const Mat &img)
+void LaneDetector::show_img_description(string name, const Mat &img)
 {
     Mat tmp(img);
     cout <<"\n" << img << "\n";
@@ -1169,7 +1156,7 @@ void DetectLane::show_img_description(string name, const Mat &img)
     }
 }
 
-void DetectLane::show_mat_per(string name, const Mat &img, char dir)
+void LaneDetector::show_mat_per(string name, const Mat &img, char dir)
 {
     cout << " Matrix " << name << ":\n" ;
 
@@ -1184,38 +1171,26 @@ void DetectLane::show_mat_per(string name, const Mat &img, char dir)
     // }
 }
 
-void DetectLane::videoProcess(string video_path, string out_img_path, int test_i_frame)
+void LaneDetector::videoProcess(string video_path)
 {
 
     VideoCapture video(video_path);
 
     Mat img;
     double angle=0, speed=-1;
+    int iframe = 0;
 
-    int iframe = 1;
     while (true)
     {
         video >> img;
-
         std::cout << " [INFO] Frame number " << iframe << "\n";
-
         if (img.empty()) {
-            std::cout << " [WARNING] The path is not existed \n";
             break;
         }
-
         imshow("View", img);
         waitKey(10);
-        if(iframe == test_i_frame){
-            this->is_test = true;
-        }
         this->detect(img, angle, speed);
         std::cout << " [INFO] angle = " << angle << ", speed =" << speed << "\n";
-        if(iframe == test_i_frame){
-            this->is_test = false;
-            cv::imwrite(out_img_path, img);
-            break;;
-        }
 
         iframe++;
     }
@@ -1226,13 +1201,13 @@ void DetectLane::videoProcess(string video_path, string out_img_path, int test_i
 //     return a < b ? a : b;
 // }
 //
-// Point DetectLane::null = Point();
+// Point LaneDetector::null = Point();
 //
 //
 //
 //
 // // check later , alternative way is STAGE2
-// Mat DetectLane::preProcess(const Mat &src)
+// Mat LaneDetector::preProcess(const Mat &src)
 // {
 //
 //     Mat imgThresholded, imgHSV, warped_img;
@@ -1268,7 +1243,7 @@ void DetectLane::videoProcess(string video_path, string out_img_path, int test_i
 //
 //
 //
-// Mat DetectLane::laneInShadow(const Mat &src)
+// Mat LaneDetector::laneInShadow(const Mat &src)
 // {
 //     Mat shadowMask, shadow, imgHSV, shadowHSV, laneShadow;
 //     cvtColor(src, imgHSV, COLOR_BGR2HSV);
@@ -1288,7 +1263,7 @@ void DetectLane::videoProcess(string video_path, string out_img_path, int test_i
 //     return laneShadow;
 // }
 //
-// void DetectLane::fillLane(Mat &src)
+// void LaneDetector::fillLane(Mat &src)
 // {
 //     vector<Vec4i> lines;
 //     HoughLinesP(src, lines, 1, CV_PI/180, 1);
@@ -1299,7 +1274,7 @@ void DetectLane::videoProcess(string video_path, string out_img_path, int test_i
 //     }
 // }
 //
-// vector<Mat> DetectLane::splitLayer(const Mat &src, int dir)
+// vector<Mat> LaneDetector::splitLayer(const Mat &src, int dir)
 // {
 //     int rowN = src.rows;
 //     int colN = src.cols;
@@ -1327,7 +1302,7 @@ void DetectLane::videoProcess(string video_path, string out_img_path, int test_i
 //     return res;
 // }
 //
-// vector<vector<Point> > DetectLane::centerRoadSide(const vector<Mat> &src, int dir)
+// vector<vector<Point> > LaneDetector::centerRoadSide(const vector<Mat> &src, int dir)
 // {
 //     vector<std::vector<Point> > res;
 //     int inputN = src.size();
@@ -1364,7 +1339,7 @@ void DetectLane::videoProcess(string video_path, string out_img_path, int test_i
 //     return res;
 // }
 //
-// void DetectLane::detectLeftRight(const vector<vector<Point> > &points)
+// void LaneDetector::detectLeftRight(const vector<vector<Point> > &points)
 // {
 //     static vector<Point> lane1, lane2;
 //     lane1.clear();
@@ -1499,7 +1474,7 @@ void DetectLane::videoProcess(string video_path, string out_img_path, int test_i
 // }
 //
 //
-// Mat DetectLane::morphological(const Mat &img)
+// Mat LaneDetector::morphological(const Mat &img)
 // {
 //     Mat dst;
 //

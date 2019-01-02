@@ -19,11 +19,11 @@ using namespace cv;
 
 // catkin_make && roslaunch lane_detect lane_de
 
-class DetectLane
+class LaneDetector
 {
 public:
-    DetectLane();
-    ~DetectLane();
+    LaneDetector();
+    ~LaneDetector();
 
     /*
     Width and height of input image , which is fixed size !
@@ -156,7 +156,7 @@ private:
     void show_mat_per(string name, const Mat &img, char dir); // dir = 'row' or 'col'
 
 public:
-    void videoProcess(string video_path, string out_img_path, int test_i_frame);
+    void videoProcess(string video_path);
 
 
     // vector<Point> leftLane, rightLane;

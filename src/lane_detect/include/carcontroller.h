@@ -12,16 +12,16 @@
 
 #include <unistd.h>
 
-#include "detectlane.h"
+#include "lanedetector.h"
 
 using namespace std;
 using namespace cv;
 
-class CarControl
+class CarController
 {
 public:
-    CarControl();
-    ~CarControl();
+    CarController();
+    ~CarController();
     void driverCar(float _angle, float velocity);
     void driverCar(const vector<Point> &left, const vector<Point> &right, float velocity);
 

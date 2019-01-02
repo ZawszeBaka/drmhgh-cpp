@@ -11,7 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 set(OpenCV_STATIC OFF)
-find_package(  OpenCV REQUIRED )
+find_package(  OpenCV 3.4.5 REQUIRED )
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 catkin_package(
@@ -27,8 +27,9 @@ include_directories(
 )
 
 add_library(api_lane_detection
-  src/detectlane.cpp
-  src/carcontrol.cpp
+  src/lanedetector.cpp
+  src/carcontroller.cpp
+  src/signrecognizer.cpp
 )
 
 add_executable(lane_detect src/main.cpp)

@@ -1,3 +1,7 @@
+Team1
+ws://127.0.0.1:9090
+
+Install OpenCV to virtualenv # recommended
 
 # ROS_Package_example
 ## I. Installation
@@ -9,7 +13,7 @@
       ```
       $ sudo apt-get install ros-<distro>-desktop-full
       ```
-      
+
 3. Create catkin workspace
     ```
     $ mkdir -p ~/catkin_ws/src
@@ -20,7 +24,7 @@
     $ #or
     $ source devel/setup.bash
     ```
-  
+
 4. Install rosbridge-suite
     ```
     $ sudo apt-get install ros-<distro>-rosbridge-server
@@ -34,4 +38,3 @@
 
 =====================================================================
 Update Code :https://drive.google.com/drive/folders/1sqVxYwPfHmCDlFcriqGFqOyqtwIWCU62?usp=sharing- Retrieved Team1_image
-

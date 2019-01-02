@@ -57,67 +57,93 @@ include lane_detect/CMakeFiles/api_lane_detection.dir/progress.make
 # Include the compile flags for this target's objects.
 include lane_detect/CMakeFiles/api_lane_detection.dir/flags.make
 
-lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.o: lane_detect/CMakeFiles/api_lane_detection.dir/flags.make
-lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.o: /home/yus/Documents/ROS/my_project/src/lane_detect/src/detectlane.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yus/Documents/ROS/my_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.o"
-	cd /home/yus/Documents/ROS/my_project/build/lane_detect && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.o -c /home/yus/Documents/ROS/my_project/src/lane_detect/src/detectlane.cpp
+lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o: lane_detect/CMakeFiles/api_lane_detection.dir/flags.make
+lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o: /home/yus/Documents/ROS/my_project/src/lane_detect/src/lanedetector.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yus/Documents/ROS/my_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o"
+	cd /home/yus/Documents/ROS/my_project/build/lane_detect && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o -c /home/yus/Documents/ROS/my_project/src/lane_detect/src/lanedetector.cpp
 
-lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.i"
-	cd /home/yus/Documents/ROS/my_project/build/lane_detect && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/yus/Documents/ROS/my_project/src/lane_detect/src/detectlane.cpp > CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.i
+lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.i"
+	cd /home/yus/Documents/ROS/my_project/build/lane_detect && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/yus/Documents/ROS/my_project/src/lane_detect/src/lanedetector.cpp > CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.i
 
-lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.s"
-	cd /home/yus/Documents/ROS/my_project/build/lane_detect && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/yus/Documents/ROS/my_project/src/lane_detect/src/detectlane.cpp -o CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.s
+lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.s"
+	cd /home/yus/Documents/ROS/my_project/build/lane_detect && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/yus/Documents/ROS/my_project/src/lane_detect/src/lanedetector.cpp -o CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.s
 
-lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.o.requires:
+lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o.requires:
 
-.PHONY : lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.o.requires
+.PHONY : lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o.requires
 
-lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.o.provides: lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.o.requires
-	$(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.o.provides.build
-.PHONY : lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.o.provides
+lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o.provides: lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o.requires
+	$(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o.provides.build
+.PHONY : lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o.provides
 
-lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.o.provides.build: lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.o
+lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o.provides.build: lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o
 
 
-lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.o: lane_detect/CMakeFiles/api_lane_detection.dir/flags.make
-lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.o: /home/yus/Documents/ROS/my_project/src/lane_detect/src/carcontrol.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yus/Documents/ROS/my_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.o"
-	cd /home/yus/Documents/ROS/my_project/build/lane_detect && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.o -c /home/yus/Documents/ROS/my_project/src/lane_detect/src/carcontrol.cpp
+lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o: lane_detect/CMakeFiles/api_lane_detection.dir/flags.make
+lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o: /home/yus/Documents/ROS/my_project/src/lane_detect/src/carcontroller.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yus/Documents/ROS/my_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o"
+	cd /home/yus/Documents/ROS/my_project/build/lane_detect && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o -c /home/yus/Documents/ROS/my_project/src/lane_detect/src/carcontroller.cpp
 
-lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.i"
-	cd /home/yus/Documents/ROS/my_project/build/lane_detect && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/yus/Documents/ROS/my_project/src/lane_detect/src/carcontrol.cpp > CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.i
+lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.i"
+	cd /home/yus/Documents/ROS/my_project/build/lane_detect && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/yus/Documents/ROS/my_project/src/lane_detect/src/carcontroller.cpp > CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.i
 
-lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.s"
-	cd /home/yus/Documents/ROS/my_project/build/lane_detect && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/yus/Documents/ROS/my_project/src/lane_detect/src/carcontrol.cpp -o CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.s
+lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.s"
+	cd /home/yus/Documents/ROS/my_project/build/lane_detect && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/yus/Documents/ROS/my_project/src/lane_detect/src/carcontroller.cpp -o CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.s
 
-lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.o.requires:
+lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o.requires:
 
-.PHONY : lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.o.requires
+.PHONY : lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o.requires
 
-lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.o.provides: lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.o.requires
-	$(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.o.provides.build
-.PHONY : lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.o.provides
+lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o.provides: lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o.requires
+	$(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o.provides.build
+.PHONY : lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o.provides
 
-lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.o.provides.build: lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.o
+lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o.provides.build: lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o
+
+
+lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o: lane_detect/CMakeFiles/api_lane_detection.dir/flags.make
+lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o: /home/yus/Documents/ROS/my_project/src/lane_detect/src/signrecognizer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/yus/Documents/ROS/my_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o"
+	cd /home/yus/Documents/ROS/my_project/build/lane_detect && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o -c /home/yus/Documents/ROS/my_project/src/lane_detect/src/signrecognizer.cpp
+
+lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.i"
+	cd /home/yus/Documents/ROS/my_project/build/lane_detect && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/yus/Documents/ROS/my_project/src/lane_detect/src/signrecognizer.cpp > CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.i
+
+lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.s"
+	cd /home/yus/Documents/ROS/my_project/build/lane_detect && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/yus/Documents/ROS/my_project/src/lane_detect/src/signrecognizer.cpp -o CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.s
+
+lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o.requires:
+
+.PHONY : lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o.requires
+
+lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o.provides: lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o.requires
+	$(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o.provides.build
+.PHONY : lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o.provides
+
+lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o.provides.build: lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o
 
 
 # Object files for target api_lane_detection
 api_lane_detection_OBJECTS = \
-"CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.o" \
-"CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.o"
+"CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o" \
+"CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o" \
+"CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o"
 
 # External object files for target api_lane_detection
 api_lane_detection_EXTERNAL_OBJECTS =
 
-/home/yus/Documents/ROS/my_project/devel/lib/libapi_lane_detection.so: lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.o
-/home/yus/Documents/ROS/my_project/devel/lib/libapi_lane_detection.so: lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.o
+/home/yus/Documents/ROS/my_project/devel/lib/libapi_lane_detection.so: lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o
+/home/yus/Documents/ROS/my_project/devel/lib/libapi_lane_detection.so: lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o
+/home/yus/Documents/ROS/my_project/devel/lib/libapi_lane_detection.so: lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o
 /home/yus/Documents/ROS/my_project/devel/lib/libapi_lane_detection.so: lane_detect/CMakeFiles/api_lane_detection.dir/build.make
 /home/yus/Documents/ROS/my_project/devel/lib/libapi_lane_detection.so: lane_detect/CMakeFiles/api_lane_detection.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/yus/Documents/ROS/my_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX shared library /home/yus/Documents/ROS/my_project/devel/lib/libapi_lane_detection.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/yus/Documents/ROS/my_project/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX shared library /home/yus/Documents/ROS/my_project/devel/lib/libapi_lane_detection.so"
 	cd /home/yus/Documents/ROS/my_project/build/lane_detect && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/api_lane_detection.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -125,8 +151,9 @@ lane_detect/CMakeFiles/api_lane_detection.dir/build: /home/yus/Documents/ROS/my_
 
 .PHONY : lane_detect/CMakeFiles/api_lane_detection.dir/build
 
-lane_detect/CMakeFiles/api_lane_detection.dir/requires: lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.o.requires
-lane_detect/CMakeFiles/api_lane_detection.dir/requires: lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.o.requires
+lane_detect/CMakeFiles/api_lane_detection.dir/requires: lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o.requires
+lane_detect/CMakeFiles/api_lane_detection.dir/requires: lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o.requires
+lane_detect/CMakeFiles/api_lane_detection.dir/requires: lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o.requires
 
 .PHONY : lane_detect/CMakeFiles/api_lane_detection.dir/requires
 

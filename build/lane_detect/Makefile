@@ -347,59 +347,59 @@ geometry_msgs_generate_messages_eus/fast:
 	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/geometry_msgs_generate_messages_eus.dir/build.make lane_detect/CMakeFiles/geometry_msgs_generate_messages_eus.dir/build
 .PHONY : geometry_msgs_generate_messages_eus/fast
 
-src/carcontrol.o: src/carcontrol.cpp.o
+src/carcontroller.o: src/carcontroller.cpp.o
 
-.PHONY : src/carcontrol.o
-
-# target to build an object file
-src/carcontrol.cpp.o:
-	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.o
-.PHONY : src/carcontrol.cpp.o
-
-src/carcontrol.i: src/carcontrol.cpp.i
-
-.PHONY : src/carcontrol.i
-
-# target to preprocess a source file
-src/carcontrol.cpp.i:
-	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.i
-.PHONY : src/carcontrol.cpp.i
-
-src/carcontrol.s: src/carcontrol.cpp.s
-
-.PHONY : src/carcontrol.s
-
-# target to generate assembly for a file
-src/carcontrol.cpp.s:
-	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontrol.cpp.s
-.PHONY : src/carcontrol.cpp.s
-
-src/detectlane.o: src/detectlane.cpp.o
-
-.PHONY : src/detectlane.o
+.PHONY : src/carcontroller.o
 
 # target to build an object file
-src/detectlane.cpp.o:
-	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.o
-.PHONY : src/detectlane.cpp.o
+src/carcontroller.cpp.o:
+	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o
+.PHONY : src/carcontroller.cpp.o
 
-src/detectlane.i: src/detectlane.cpp.i
+src/carcontroller.i: src/carcontroller.cpp.i
 
-.PHONY : src/detectlane.i
+.PHONY : src/carcontroller.i
 
 # target to preprocess a source file
-src/detectlane.cpp.i:
-	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.i
-.PHONY : src/detectlane.cpp.i
+src/carcontroller.cpp.i:
+	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.i
+.PHONY : src/carcontroller.cpp.i
 
-src/detectlane.s: src/detectlane.cpp.s
+src/carcontroller.s: src/carcontroller.cpp.s
 
-.PHONY : src/detectlane.s
+.PHONY : src/carcontroller.s
 
 # target to generate assembly for a file
-src/detectlane.cpp.s:
-	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/detectlane.cpp.s
-.PHONY : src/detectlane.cpp.s
+src/carcontroller.cpp.s:
+	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.s
+.PHONY : src/carcontroller.cpp.s
+
+src/lanedetector.o: src/lanedetector.cpp.o
+
+.PHONY : src/lanedetector.o
+
+# target to build an object file
+src/lanedetector.cpp.o:
+	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o
+.PHONY : src/lanedetector.cpp.o
+
+src/lanedetector.i: src/lanedetector.cpp.i
+
+.PHONY : src/lanedetector.i
+
+# target to preprocess a source file
+src/lanedetector.cpp.i:
+	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.i
+.PHONY : src/lanedetector.cpp.i
+
+src/lanedetector.s: src/lanedetector.cpp.s
+
+.PHONY : src/lanedetector.s
+
+# target to generate assembly for a file
+src/lanedetector.cpp.s:
+	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.s
+.PHONY : src/lanedetector.cpp.s
 
 src/main.o: src/main.cpp.o
 
@@ -428,6 +428,33 @@ src/main.cpp.s:
 	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/lane_detect.dir/build.make lane_detect/CMakeFiles/lane_detect.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/signrecognizer.o: src/signrecognizer.cpp.o
+
+.PHONY : src/signrecognizer.o
+
+# target to build an object file
+src/signrecognizer.cpp.o:
+	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o
+.PHONY : src/signrecognizer.cpp.o
+
+src/signrecognizer.i: src/signrecognizer.cpp.i
+
+.PHONY : src/signrecognizer.i
+
+# target to preprocess a source file
+src/signrecognizer.cpp.i:
+	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.i
+.PHONY : src/signrecognizer.cpp.i
+
+src/signrecognizer.s: src/signrecognizer.cpp.s
+
+.PHONY : src/signrecognizer.s
+
+# target to generate assembly for a file
+src/signrecognizer.cpp.s:
+	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.s
+.PHONY : src/signrecognizer.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -453,15 +480,18 @@ help:
 	@echo "... edit_cache"
 	@echo "... geometry_msgs_generate_messages_eus"
 	@echo "... list_install_components"
-	@echo "... src/carcontrol.o"
-	@echo "... src/carcontrol.i"
-	@echo "... src/carcontrol.s"
-	@echo "... src/detectlane.o"
-	@echo "... src/detectlane.i"
-	@echo "... src/detectlane.s"
+	@echo "... src/carcontroller.o"
+	@echo "... src/carcontroller.i"
+	@echo "... src/carcontroller.s"
+	@echo "... src/lanedetector.o"
+	@echo "... src/lanedetector.i"
+	@echo "... src/lanedetector.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/signrecognizer.o"
+	@echo "... src/signrecognizer.i"
+	@echo "... src/signrecognizer.s"
 .PHONY : help
 
 
