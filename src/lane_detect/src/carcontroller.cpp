@@ -34,8 +34,7 @@ void CarController::driverCar(float _angle, float velocity)
     speed_publisher.publish(speed);
     usleep(30);
 
-    std::cout << " [INFO] Driving: angle = " << angle.data << ", speed = " << speed.data << std::endl;
-
+    // std::cout << " [INFO] Driving: angle = " << angle.data << ", speed = " << speed.data << std::endl;
 }
 
 // void CarController::driverCar(const vector<Point> &left, const vector<Point> &right, float velocity)

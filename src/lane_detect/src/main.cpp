@@ -8,15 +8,45 @@
 #include "carcontroller.h"
 #include "signrecognizer.h"
 
+#include <ctime>
+#include <boost/timer.hpp>
 
 LaneDetector *lane_detector;
 CarController *car;
 
 double angle , speed ;
 
+// Compute FPS
+int check_frames = 100;
+int iframe = 0;
+boost::timer t;
+
+
+bool CHECK_CON = false; // check for connection
+
 // When subscribing  images
 void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
+    // Compute Fps
+    if (iframe == 0){
+        // begin
+        // start = clock();
+        t.restart();
+        iframe++;
+    }else if (iframe == check_frames){
+        // float dif = (float)std::time(0) - (float)start;
+        // std::cout << "[DEBUG] end " << (double)std::time(0) << " , start = " << (double)start << "\n";
+        // float dur = 1/(dif)*check_frames;
+        std::cout << "[INFO] " << 1/ ((float)t.elapsed()) *100 << " FPS \n";
+        iframe = 0;
+    }else{
+        iframe++;
+    }
+
+    if (CHECK_CON){
+        std::cout << "[INFO] Receiving image ! \n";
+    }
+
     cv_bridge::CvImagePtr cv_ptr;
     Mat out;
     try
@@ -94,8 +124,7 @@ int main(int argc, char **argv)
     lane_detector->margin =40;
     lane_detector->minpix = 20;
     lane_detector->nwindows = 9;
-    lane_detector->n_dim = 2; //  = 1 linear regression  , = 2 square function
-
+    lane_detector->ewindow = 4;
 
     // STAGE 3:
 
@@ -124,8 +153,8 @@ int main(int argc, char **argv)
         cv::namedWindow("View");
         cv::startWindowThread();
 
-        // writer = cv::VideoWriter("/home/yus/Documents/Video/out.avi", VideoWriter::fourcc('M','J','P','G'), 24, Size(w,h)); // 24 Fps
-        std::cout << " [INFO] Image Size = " << Size(w,h) << std::endl;
+        // writer = cv::VideoWriter("/home/yus/Documents/Video/out.avi", VideoWriter::fourcc('M','J','P','G'), 24, Size(h,w)); // 24 Fps
+        std::cout << " [INFO] Image Size = " << Size(h,w) << std::endl;
         std::cout << "[INFO] OpenCV version : " << CV_VERSION << endl;
         ros::NodeHandle nh;
 

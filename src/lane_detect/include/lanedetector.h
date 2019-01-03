@@ -31,9 +31,8 @@ public:
     int w = 320;
     int h = 240;
 
-    /*
-
-    */
+    //
+    bool reduced = true;
     bool is_test = false;
     bool is_save_fit_lines = true;
     VideoWriter writer ;
@@ -99,33 +98,16 @@ public:
     int margin = 50 ;
     int minpix = 50 ;
     int nwindows = 9;
-    int n_dim = 2;
-    // return false if not have fit line
+    int ewindow = 3; //
+    // return false if cannot detect lane
     bool slide_window(const Mat &binary_warped,
                       const Mat &histogram,
-                      vector<Point> &out_left_plot,
-                      vector<Point> &out_right_plot ,
-                      vector<double> &out_left_fit,
-                      vector<double> &out_right_fit);
-    void test_slide_window(const Mat &img);
-
+                      vector<Point2f> &center_windows);
+    int find_midpoint(const Mat &hist, float eps);
+    double calc_mean(const Mat &hist, int x_min, int x_max);
 
     // ============== STAGE 4 =================
-
-    // draw detected lines in image
-    Mat original_image_with_lines(Mat &img,
-                                  vector<Point> left_pts,
-                                  vector<Point> right_pts);
-    double finding_angle_direction(Mat binary_img,
-                                   vector<double> &left_coefs,
-                                   vector<double> &right_coefs);
-    double finding_angle_direction(Mat binary_img);
-
-
-    Point2f upper_center;
-    Point2f lower_center;
-
-
+    double calc_angle(std::vector<Point2f> center_windows);
 
 private:
 

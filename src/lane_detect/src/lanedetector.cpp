@@ -12,16 +12,10 @@ LaneDetector::LaneDetector() {
     //
     // cvCreateTrackbar("Shadow Param", "Threshold", &shadowParam, 255);
 
-    if (is_save_fit_lines)
-    {
-        auto samplePic = cv::imread("/home/yus/Documents/Pic/abc.png");
-        writer = cv::VideoWriter("/home/yus/Documents/Video/bi_out.avi", VideoWriter::fourcc('M','J','P','G'), 24, samplePic.size()); // 24 Fps
-    }
-
 }
 
 LaneDetector::~LaneDetector(){
-    if (is_save_fit_lines) writer.release();
+
 }
 
 void LaneDetector::detect(const Mat &img, double &angle, double &speed)
@@ -29,10 +23,7 @@ void LaneDetector::detect(const Mat &img, double &angle, double &speed)
     // STAGE 2
     // gradient threshold
 
-    if(is_test){
-        imshow("Origial Image", img);
-        show_histogram_normal(img);
-    }
+    reduced = true;
 
     Mat gray;
     // cvtColor(img, gray, cv::CV_RGB2GRAY);
@@ -55,15 +46,17 @@ void LaneDetector::detect(const Mat &img, double &angle, double &speed)
     vector<Point> left_plot, right_plot;
     vector<double> left_fit, right_fit;
 
-    if (slide_window(binary_warped, histogram,
-                 left_plot, right_plot,
-                 left_fit, right_fit))
+    reduced = false;
+    vector<Point2f> center_windows;
+    bool ret = slide_window(binary_warped, histogram, center_windows);
+    if (ret)
     {
-        // angle = finding_angle_direction(binary_warped, left_fit,right_fit);
-        angle = finding_angle_direction(binary_warped);
+        angle = calc_angle(center_windows);
+        // cout << "[] angle = " << angle << "\n";
         speed = 50.0;
+    }else{
+        // std::cout << "[INFO] Cannot find lane ! \n";
     }
-
 }
 
 /*====================STAGE 1=====================*/
@@ -109,14 +102,14 @@ Mat LaneDetector::warp(const Mat &img)
     Mat warped_img(img.size().height, img.size().width, CV_8UC3);
     warpPerspective(img, warped_img, M, warped_img.size(), INTER_LINEAR, BORDER_CONSTANT);
 
-    if(is_test){
+    if(!reduced){
         Mat tmp(img);
         if (get_mat_type(tmp) == "8UC1")
         {
             plot_binary_img(" Stage 2 - Warped Binaric Image" , warped_img);
         } else{
             imshow(" Stage 2 - Warped Image", warped_img);
-            waitKey();
+            waitKey(1);
         }
     }
 
@@ -313,11 +306,11 @@ Mat LaneDetector::get_histogram(const Mat &binary_warped)
     Mat haft_bottom = binary_warped(Range(round(height/2), height), Range(0,width)); // row range, col range
     Mat histogram = sum(haft_bottom,'x');
 
-    if (is_test)
+    if (!reduced)
     {
         plot_binary_img("Stage 3 - Get histogram of this region", haft_bottom);
         cv::imshow("Stage 3 - Histogram of image intensities", plot_histogram(histogram));
-        waitKey();
+        waitKey(1);
     }
 
     return histogram;
@@ -326,47 +319,44 @@ Mat LaneDetector::get_histogram(const Mat &binary_warped)
 
 bool LaneDetector::slide_window(const Mat &binary_warped,
                               const Mat &histogram,
-                              vector<Point> &out_left_plot,
-                              vector<Point> &out_right_plot,
-                              vector<double> &out_left_fit,
-                              vector<double> &out_right_fit)
+                              vector<Point2f> &center_windows)
 {
 
-    Mat hist = histogram.t();
+    Mat hist = histogram.t(); // transpose
 
     int width = binary_warped.size().width;
     int height = binary_warped.size().height;
 
+    Mat nonzero = findNonzero(binary_warped);
+
     // convert 2-D binary image into 2-D colored image (3channels)
     Mat out_img = dstack(binary_warped);
 
-    // midpoint
-    int midpoint = round(hist.size().width/2);
+    // midpoint using multiple iterations T = (T1 + T2) / 2
+    // int midpoint = round(hist.size().width/2);
+    int midpoint = find_midpoint(hist,2); // hist, min, max, eps
+    // cout << "[INFO] midpoint = " << midpoint << "\n";
+    if(midpoint == -1){
+      return false ;
+    }
 
     // left boundary to the middle
-    int leftx_base = arg_max(hist(Range(0, 1), Range(0,midpoint))).x; // row range, col range
+    int leftx_current = arg_max(hist(Range(0, 1), Range(0,midpoint))).x; // row range, col range
 
     // right boundary to the middle
-    int rightx_base = arg_max(hist(Range(0, 1), Range(midpoint,width))).x + midpoint; // row range, col range
+    int rightx_current = arg_max(hist(Range(0, 1), Range(midpoint,width))).x + midpoint; // row range, col range
 
     // window height = height / nwindows
     int window_height = round(height/nwindows);
 
-    Mat nonzero = findNonzero(binary_warped);
-
-    // iterate through all windows
-    int leftx_current = leftx_base;
-    int rightx_current = rightx_base;
-
-    vector<int> leftx; // which is inside the boxes
-    vector<int> lefty;
-    vector<int> rightx;
-    vector<int> righty; // which is inside the boxes
-
-    Mat out_img_show(out_img);
     for(int window = 0; window < nwindows; window++)
     {
-        int win_y_low = height - (window+1) * window_height;
+        int win_y_low;
+        if (window != nwindows - 1){
+            win_y_low = height - (window+1) * window_height;
+        }else{
+            win_y_low = 0;
+        }
         int win_y_high = height - (window) * window_height;
 
         int win_xleft_low = leftx_current - margin;
@@ -375,259 +365,144 @@ bool LaneDetector::slide_window(const Mat &binary_warped,
         int win_xright_low = rightx_current - margin;
         int win_xright_high = rightx_current + margin;
 
-
-        if (is_test)
+        if (!reduced)
         {
-            cv::rectangle(out_img_show, Point(win_xleft_low,win_y_low),
+            cv::rectangle(out_img, Point(win_xleft_low,win_y_low),
                           Point(win_xleft_high,win_y_high), Scalar(0,255,0), 2); // img, firstpoint, secondpoint, color, thickness
-            cv::rectangle(out_img_show, Point(win_xright_low,win_y_low),
+            cv::rectangle(out_img, Point(win_xright_low,win_y_low),
                           Point(win_xright_high,win_y_high), Scalar(0,255,0), 2);
-            cv::imshow("Stage 3 - Sliding Window", out_img_show);
-            waitKey();
         }
 
-        vector<int> currentLeftPtsX;
-        vector<int> currentRightPtsX;
+        vector<int> leftxs; // which is inside the boxes
+        vector<int> leftys;
+        vector<int> rightxs;
+        vector<int> rightys;
 
         // maintain only points which are inside this box
-        // cout << " y = "  << win_y_low << " to " <<
-        // win_y_high << " x = " << win_xleft_low << " to "
-        // << win_xleft_high << "\n";
         for (int i = 0; i < nonzero.size().width ; i++)
         {
             Point p = nonzero.at<Point>(0,i);
-            if (is_inside_box(win_y_low, win_y_high,
-                             win_xleft_low, win_xleft_high, p))
+            if (is_inside_box(win_y_low, win_y_high,win_xleft_low, win_xleft_high, p))
             {
-                // cout << " add points : " << p.x << ", " << p.y << "\n";
-                leftx.push_back(p.x);
-                lefty.push_back(p.y);
-                currentLeftPtsX.push_back(p.x);
-            } else if (is_inside_box(win_y_low, win_y_high,
-                                    win_xright_low, win_xright_high, p))
+                leftxs.push_back(p.x);
+                leftys.push_back(p.y);
+            }else if (is_inside_box(win_y_low, win_y_high,win_xright_low, win_xright_high, p))
             {
-                rightx.push_back(p.x);
-                righty.push_back(p.y);
-                currentRightPtsX.push_back(p.x);
+                rightxs.push_back(p.x);
+                rightys.push_back(p.y);
             }
         }
 
-        // std::cout << " num left pts " << currentLeftPtsX.size() << "\n";
-        // std::cout << " num right pts " << currentRightPtsX.size() << "\n";
-        if (currentLeftPtsX.size() > minpix)
+        if (leftxs.size() > minpix)
         {
-            leftx_current = round(cv::mean(currentLeftPtsX)[0]);
-            // std::cout << "num left " << currentLeftPtsX.size() <<
-            // " leftx_current : " << leftx_current << "\n";
+            leftx_current = round(cv::mean(leftxs)[0]);
         }
 
-        if (currentRightPtsX.size() > minpix)
+        if (rightxs.size() > minpix)
         {
-            rightx_current = round(cv::mean(currentRightPtsX)[0]);
-            // std::cout << "num right " << currentRightPtsX.size() <<
-            // " rightx_current : " << rightx_current << "\n\n";
+            rightx_current = round(cv::mean(rightxs)[0]);
         }
+
+        double center_x, center_y;
+        if ((leftxs.size() > minpix) && (rightxs.size() > minpix)){
+            center_x = (cv::mean(leftxs)[0] + cv::mean(rightxs)[0])/2;
+            center_y = (cv::mean(leftys)[0] + cv::mean(rightys)[0])/2;
+        } else
+        {
+            center_x = (rightx_current - leftx_current)/2 + leftx_current;
+            center_y = (float)(win_y_low - win_y_high)/2 + win_y_high;
+        }
+        center_windows.push_back(Point2f(center_x,center_y));
 
         // windowtest
         // window = 4 OKKK
-        if (window==2){
-            upper_center.x = (cv::mean(currentLeftPtsX)[0] + cv::mean(currentRightPtsX)[0])/2;
-            upper_center.y = (cv::mean(currentLeftPtsX)[1] + cv::mean(currentRightPtsX)[1])/2;
-            lower_center.x = width/2;
-            lower_center.y = height;
+        if (window==ewindow-1){
+            break;
         }
     }
 
-    Mat img_with_lines(out_img);
-
-    vector<double> left_fit;
-    vector<double> right_fit;
-    if (leftx.size() < 4){
-        // not detect enough points to find the best fit left line
-        std::cout << " [WARNING] Not detect left line \n";
-        return false;
-    }else{
-        left_fit = polyfit(lefty, leftx, n_dim);
-
-        if (is_test || is_save_fit_lines){
-            out_left_plot = polyval(img_with_lines, left_fit);
-            img_with_lines = drawPolylines(img_with_lines, out_left_plot);
-            if(n_dim == 2)
-            {
-                out_left_plot = polyval(img_with_lines, left_fit, true);
-                img_with_lines = drawPolylines(img_with_lines, out_left_plot);
-            }
-
-            Point p1(round(lower_center.x), round(lower_center.y));
-            Point p2(round(upper_center.x), round(upper_center.y));
-            line(img_with_lines, p1,p2, Scalar(0,255,0), 8);
-
-        }
+    if(!reduced){
+        imshow("Stage 3 - Sliding Window", out_img);
+        waitKey(1);
     }
-
-    if (rightx.size() < 4){
-        // not detect enough points to find the best fit right line
-        std::cout << " [WARNING] Not detect right line \n";
-        return false;
-    }else{
-        right_fit = polyfit(righty, rightx, n_dim);
-
-        if(is_test || is_save_fit_lines){
-          out_right_plot = polyval(img_with_lines, right_fit);
-          img_with_lines = drawPolylines(img_with_lines, out_right_plot);
-          if(n_dim == 2)
-          {
-              out_right_plot = polyval(img_with_lines, right_fit, true);
-              img_with_lines = drawPolylines(img_with_lines, out_right_plot);
-          }
-        }
-    }
-
-    if(is_test){
-        imshow("Stage 3 - Sliding Window", img_with_lines);
-        waitKey();
-    }
-    if(is_save_fit_lines)
-    {
-        writer << img_with_lines;
-    }
-
-    out_left_fit = left_fit;
-    out_right_fit = right_fit;
 
     return true;
+}
 
+int LaneDetector::find_midpoint(const Mat &hist, float eps)
+{
+    int w = hist.size().width;
+
+    int x_min, x_max;
+
+    // finding x_min
+    int i;
+    for(i = 0; i < w; i++){
+        if ((int)hist.at<uchar>(0,i) != 0){
+            break;
+        }
+    }
+    if (i == w-1){
+        return -1;
+    }else{
+        x_min = i;
+    }
+
+    // finding x_max
+    for(i = w-1; i >= 0; i--){
+        if ((int)hist.at<uchar>(0,i) != 0){
+            break;
+        }
+    }
+    if(i==0){
+        return -1;
+    }else{
+        x_max = i;
+    }
+
+    float T = x_min + (float)(x_max-x_min)/2;
+    while(true)
+    {
+        float m1 = calc_mean(hist, x_min, floor(T));
+        float m2 = calc_mean(hist, floor(T), x_max);
+        if ((m1 == -1)||(m2 == -1)){
+            return -1;
+        }
+        float T_new = (m1+m2)/2;
+        if (abs(T-T_new) < eps){
+            return round(T);
+        }
+        T = T_new;
+    }
+}
+
+double LaneDetector::calc_mean(const Mat &hist, int x_min, int x_max)
+{
+    double count = 0;
+    double s = 0;
+    for(int i = x_min; i < x_max; i++){
+        count += (int)hist.at<uchar>(0,i);
+        s += i * (int)hist.at<uchar>(0,i);
+    }
+    if (count == 0){
+      // cout << "[DEBUG] count = 0 !!" << " min = " << x_min << " max = " << x_max << "\n";
+      return -1;
+    }else{
+      return s/count;
+    }
 }
 
 // ==========================STAGE 4 ===============================
-// draw detected lines in image
-Mat LaneDetector::original_image_with_lines(Mat &img,
-                                          vector<Point> left_pts,
-                                          vector<Point> right_pts)
+
+double LaneDetector::calc_angle(vector<Point2f> center_windows)
 {
-    Point2f src[4];
-    for(int i = 0 ; i < 4; i++){
-        src[i] = this->src.at(i);
-    }
-    Point2f dst[4];
-    for(int i = 0 ; i < 4; i++){
-        dst[i] = this->dst.at(i);
-    }
-    Mat Minv = getPerspectiveTransform(dst, src);
-    vector<Point> result_pts;
+    // upper
+    double x1 = center_windows[ewindow-1].x;
+    double y1 = center_windows[ewindow-1].y;
 
-    int sz = left_pts.size();
-    for(int i = 0; i < sz; i++)
-    {
-        double x = (double)left_pts[i].x;
-        double y = (double)left_pts[i].y;
-
-        double _x = Minv.at<double>(0,0)*x + Minv.at<double>(0,1)*y + Minv.at<double>(0,2);
-        double _y = Minv.at<double>(1,0)*x + Minv.at<double>(1,1)*y + Minv.at<double>(1,2);
-
-        result_pts.push_back(Point(round(_x), round(_y)));
-    }
-
-    sz = right_pts.size();
-    for(int i = 0; i < sz; i++)
-    {
-        double x = (double)right_pts[i].x;
-        double y = (double)right_pts[i].y;
-
-        double _x = Minv.at<double>(0,0)*x + Minv.at<double>(0,1)*y + Minv.at<double>(0,2);
-        double _y = Minv.at<double>(1,0)*x + Minv.at<double>(1,1)*y + Minv.at<double>(1,2);
-
-        result_pts.push_back(Point(round(_x), round(_y)));
-    }
-
-    return drawPolylines(img, result_pts);
-
-}
-
-double LaneDetector::finding_angle_direction(Mat binary_img, vector<double> &left_coefs, vector<double> &right_coefs)
-{
-
-    int sz = left_coefs.size();
-
-    // DIMENSION = 2
-    if (sz == 2){
-
-        std::cout << "\n [INFO] left coefs : a1 = " << left_coefs[1] <<
-                     ", b1 = " << left_coefs[0] << "\n";
-        std::cout << " [INFO] right coefs : a1 = " << right_coefs[1] <<
-                    ", b1 = " << right_coefs[0] << "\n";
-
-        // linear regression: x = a y + b
-        double a1 = left_coefs[1];
-        double b1 = left_coefs[0];
-        double a2 = right_coefs[1];
-        double b2 = left_coefs[0];
-
-        // cai' nay` ham` bac 1
-        // return pow(-((atan(a1) + atan(a2))/2),5); // tới vật cản, tạm ổn
-
-        return pow(-((atan(a1) + atan(a2))/2),5);
-
-    }
-
-    // DIMENSION == 3
-    int height = binary_img.size().height;
-
-    std::cout << "\n [INFO] left coefs : a1 = " << left_coefs[2] <<
-                 ", b1 = " << left_coefs[1] <<
-                 ", c1 = " << left_coefs[0] << "\n";
-    std::cout << " [INFO] right coefs : a1 = " << right_coefs[2] <<
-                ", b1 = " << right_coefs[1] <<
-                ", c1 = " << right_coefs[0] << "\n";
-
-    // left x = a1 * y^2 + b1 * y + c1
-    double a1 = left_coefs[2];
-    double b1 = left_coefs[1];
-    double c1 = left_coefs[0];
-
-    // right x = a2 * y^2 + b2 * y + c2
-    double a2 = right_coefs[2];
-    double b2 = right_coefs[1];
-    double c2 = right_coefs[0];
-    double h = height;
-    std::cout << " h = " << h << " Pi = " << M_PI << "\n";
-
-    // cai' nay` la` ham` bac 2
-    return abs((-((atan(a1*(h)+b1) + atan(a2*(h)+ b2))/8))/M_PI*120)*
-           ((-((atan(a1*(h)+b1) + atan(a2*(h)+ b2))/8))/M_PI*120);
-    // return pow((-((atan(a1*(h)+b1) + atan(a2*(h)+ b2))/8))/M_PI*120,3);
-
-    // if(atan(2*a1*h+b1) < atan(2*a2*(h)+ b2))
-    // {
-    //     return (-(atan(a2*(h)+ b2))/12)/M_PI*180;
-    // }
-    // else
-    // {
-    //     return (-((atan(a1*(h)+b1))/12))/M_PI*180;
-    // }
-
-
-    // method 1
-    // M_PIq
-    // return ((atan(2*a1*h+b1) + atan(2*a2*h + b2))/2 - M_PI/4) ;///M_PI*180;
-
-    // if(atan(2*a1*h+b1) > atan(2*a2*h + b2))
-    // {
-    //     return pow((atan(2*a1*h+b1) - M_PI/4)/M_PI*180,1);
-    // }else{
-    //     return pow((atan(2*a2*h+b2) - M_PI/4)/M_PI*180,1);
-    // }
-
-
-}
-
-double LaneDetector::finding_angle_direction(Mat binary_img)
-{
-    double x1 = upper_center.x;
-    double y1 = upper_center.y;
-
-    double x2 = lower_center.x;
-    double y2 = lower_center.y;
+    // lower
+    double x2 = (double)w/2;
+    double y2 = (double)h;
 
     // y = a x + b
     // x1    1    y1
@@ -636,7 +511,6 @@ double LaneDetector::finding_angle_direction(Mat binary_img)
     // (x2-x1) a = y2-y1
     // a = (y2-y1)/(x2-x1)
     return -atan((x2-x1)/(y2-y1))/M_PI * 180;
-
 }
 
 
@@ -711,9 +585,6 @@ Mat LaneDetector::sum(Mat mat, char axis)
             result.at<int>(y,0) = round(s);
         }
     }
-
-    // cout << result << "\n";
-    // cout << " after summing " << result.size().width << "," << result.size().height << "\n";
 
     return result ;
 }
@@ -1125,7 +996,7 @@ void LaneDetector::plot_binary_img(string name, const Mat &img)
     Mat plt_img(img);
     plt_img.convertTo(plt_img, CV_64F);
     cv::imshow(name, plt_img);
-    waitKey();
+    waitKey(1);
 }
 
 void LaneDetector::plot_binary_img(string name, const Mat &img, int wait_time)
@@ -1145,7 +1016,7 @@ void LaneDetector::show_img_description(string name, const Mat &img)
     show_min_max(name, tmp);
     cout << "\n" ;
 
-    if(is_test){
+    if(!reduced){
         if ((get_mat_type(tmp) == "8UC1") && ((find_max(tmp) == 1) || (find_min(tmp) == 0)))
         {
             plot_binary_img(" [Description] Binaric Image" , tmp);
