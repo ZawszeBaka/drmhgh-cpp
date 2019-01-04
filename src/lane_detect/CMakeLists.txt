@@ -11,7 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 set(OpenCV_STATIC OFF)
-find_package(  OpenCV 3.4.5 REQUIRED )
+find_package(  OpenCV 3.4 REQUIRED)
+
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 catkin_package(
@@ -30,6 +31,7 @@ add_library(api_lane_detection
   src/lanedetector.cpp
   src/carcontroller.cpp
   src/signrecognizer.cpp
+  src/helperfunctions.cpp
 )
 
 add_executable(lane_detect src/main.cpp)
@@ -44,14 +46,16 @@ target_link_libraries(
   ${Boost_LIBRARIES}
 )
 
-install(TARGETS api_lane_detection ${ADDITIONAL_EXECUTABLES}
-   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
- )
+#install(TARGETS api_lane_detection ${ADDITIONAL_EXECUTABLES}
+#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
 
-install(DIRECTORY include/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-  FILES_MATCHING PATTERN "*.h"
-  PATTERN ".svn" EXCLUDE
-)
+#install(DIRECTORY include/
+#  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+#  FILES_MATCHING PATTERN "*.h"
+#  PATTERN ".svn" EXCLUDE
+#)
+
+message("Open CV version is ${OpenCV_VERSION}")

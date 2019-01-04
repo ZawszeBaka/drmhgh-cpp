@@ -374,6 +374,33 @@ src/carcontroller.cpp.s:
 	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.s
 .PHONY : src/carcontroller.cpp.s
 
+src/helperfunctions.o: src/helperfunctions.cpp.o
+
+.PHONY : src/helperfunctions.o
+
+# target to build an object file
+src/helperfunctions.cpp.o:
+	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/helperfunctions.cpp.o
+.PHONY : src/helperfunctions.cpp.o
+
+src/helperfunctions.i: src/helperfunctions.cpp.i
+
+.PHONY : src/helperfunctions.i
+
+# target to preprocess a source file
+src/helperfunctions.cpp.i:
+	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/helperfunctions.cpp.i
+.PHONY : src/helperfunctions.cpp.i
+
+src/helperfunctions.s: src/helperfunctions.cpp.s
+
+.PHONY : src/helperfunctions.s
+
+# target to generate assembly for a file
+src/helperfunctions.cpp.s:
+	cd /home/yus/Documents/ROS/my_project/build && $(MAKE) -f lane_detect/CMakeFiles/api_lane_detection.dir/build.make lane_detect/CMakeFiles/api_lane_detection.dir/src/helperfunctions.cpp.s
+.PHONY : src/helperfunctions.cpp.s
+
 src/lanedetector.o: src/lanedetector.cpp.o
 
 .PHONY : src/lanedetector.o
@@ -483,6 +510,9 @@ help:
 	@echo "... src/carcontroller.o"
 	@echo "... src/carcontroller.i"
 	@echo "... src/carcontroller.s"
+	@echo "... src/helperfunctions.o"
+	@echo "... src/helperfunctions.i"
+	@echo "... src/helperfunctions.s"
 	@echo "... src/lanedetector.o"
 	@echo "... src/lanedetector.i"
 	@echo "... src/lanedetector.s"

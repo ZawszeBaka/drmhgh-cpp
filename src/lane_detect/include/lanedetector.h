@@ -3,7 +3,7 @@
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/opencv.hpp>
+// #include <opencv2/opencv.hpp>
 
 #include <ros/ros.h>
 #include <vector>
@@ -139,31 +139,6 @@ private:
 
 public:
     void videoProcess(string video_path);
-
-
-    // vector<Point> leftLane, rightLane;
-    // Mat preProcess(const Mat &src);
-    //
-    // Mat morphological(const Mat &imgHSV);
-    //
-    // void fillLane(Mat &src);
-    // vector<Mat> splitLayer(const Mat &src, int dir = VERTICAL);
-    // vector<vector<Point> > centerRoadSide(const vector<Mat> &src, int dir = VERTICAL);
-    // void detectLeftRight(const vector<vector<Point> > &points);
-    // Mat laneInShadow(const Mat &src);
-    //
-    // // Hue, Saturation, Value thresholds
-    // int minThreshold[3] = {0, 0, 180};
-    // int maxThreshold[3] = {179, 30, 255};
-    //
-    // int minShadowTh[3] = {90, 43, 36};
-    // int maxShadowTh[3] = {120, 81, 171};
-    // int minLaneInShadow[3] = {90, 43, 97};
-    // int maxLaneInShadow[3] = {120, 80, 171};
-    // int binaryThreshold = 180;
-    //
-    // int skyLine = 85;
-    // int shadowParam = 40;
 
 };
 

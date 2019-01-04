@@ -11,7 +11,6 @@ LaneDetector::LaneDetector() {
     // cvCreateTrackbar("HighV", "Threshold", &maxThreshold[2], 255);
     //
     // cvCreateTrackbar("Shadow Param", "Threshold", &shadowParam, 255);
-
 }
 
 LaneDetector::~LaneDetector(){
@@ -109,7 +108,7 @@ Mat LaneDetector::warp(const Mat &img)
             plot_binary_img(" Stage 2 - Warped Binaric Image" , warped_img);
         } else{
             imshow(" Stage 2 - Warped Image", warped_img);
-            waitKey(1);
+            // waitKey(1);
         }
     }
 
@@ -310,7 +309,7 @@ Mat LaneDetector::get_histogram(const Mat &binary_warped)
     {
         plot_binary_img("Stage 3 - Get histogram of this region", haft_bottom);
         cv::imshow("Stage 3 - Histogram of image intensities", plot_histogram(histogram));
-        waitKey(1);
+        // waitKey(1);
     }
 
     return histogram;
@@ -334,7 +333,7 @@ bool LaneDetector::slide_window(const Mat &binary_warped,
 
     // midpoint using multiple iterations T = (T1 + T2) / 2
     // int midpoint = round(hist.size().width/2);
-    int midpoint = find_midpoint(hist,2); // hist, min, max, eps
+    int midpoint = find_midpoint(hist,5); // hist, min, max, eps
     // cout << "[INFO] midpoint = " << midpoint << "\n";
     if(midpoint == -1){
       return false ;
@@ -423,7 +422,7 @@ bool LaneDetector::slide_window(const Mat &binary_warped,
 
     if(!reduced){
         imshow("Stage 3 - Sliding Window", out_img);
-        waitKey(1);
+        // waitKey(1);
     }
 
     return true;
@@ -747,124 +746,124 @@ bool LaneDetector::is_inside_box(int win_y_low, int win_y_high,
     }
     else return false;
 }
-
-vector<double> LaneDetector::polyfit(vector<int> vecX, vector<int> vecY, int nDegree)
-{
-    // X and Y must be the same size
-
-
-    if(nDegree == 1)
-    {
-        vector<Point> pts ;
-        int sz = vecX.size();
-        for(int i = 0; i < sz; i++)
-        {
-          pts.push_back(Point(vecY[i], vecX[i]));
-        }
-
-        cv::Vec4f linear_line; // (-n, m) normalized vector collinear to the line , (x0,y0)
-
-        cv::fitLine(pts, linear_line, CV_DIST_L2, 1, 0.001, 0.001);
-        // cv::fitLine(pts, linear_line, CV__TEST_LE, 1, 0.001, 0.001);
-
-        // mx + ny + c = 0
-        double m = linear_line[1];
-        double n = -linear_line[0];
-        double x = linear_line[2];
-        double y = linear_line[3];
-        double c = - m * x - n * y;
-
-        vector<double> rs;
-        rs.push_back(-c/m);
-        rs.push_back(-n/m);
-
-        return rs;
-
-    }
-
-
-    int N = vecX.size();
-    double x[N],y[N];
-
-    for(int i = 0 ; i < N ; i++)
-    {
-        x[i] = (double)vecX[i];
-        y[i] = (double)vecY[i];
-    }
-
-    int n = nDegree;                         // n is the degree of Polynomial
-    double X[2*n+1];                        //Array that will store the values of sigma(xi),sigma(xi^2),sigma(xi^3)....sigma(xi^2n)
-    for (int i=0;i<2*n+1;i++)
-    {
-        X[i]=0;
-        for (int j=0;j<N;j++)
-            X[i]=X[i]+pow(x[j],i);        //consecutive positions of the array will store N,sigma(xi),sigma(xi^2),sigma(xi^3)....sigma(xi^2n)
-    }
-    double B[n+1][n+2],a[n+1];            //B is the Normal matrix(augmented) that will store the equations, 'a' is for value of the final coefficients
-    for (int i=0;i<=n;i++)
-        for (int j=0;j<=n;j++)
-            B[i][j]=X[i+j];            //Build the Normal matrix by storing the corresponding coefficients at the right positions except the last column of the matrix
-    double Y[n+1];                    //Array to store the values of sigma(yi),sigma(xi*yi),sigma(xi^2*yi)...sigma(xi^n*yi)
-    for (int i=0;i<n+1;i++)
-    {
-        Y[i]=0;
-        for (int j=0;j<N;j++)
-        Y[i]=Y[i]+pow(x[j],i)*y[j];        //consecutive positions will store sigma(yi),sigma(xi*yi),sigma(xi^2*yi)...sigma(xi^n*yi)
-    }
-    for (int i=0;i<=n;i++)
-        B[i][n+1]=Y[i];                //load the values of Y as the last column of B(Normal Matrix but augmented)
-    n=n+1;                //n is made n+1 because the Gaussian Elimination part below was for n equations, but here n is the degree of polynomial and for n degree we get n+1 equations
-    // if(is_test){
-    //   cout<<"\nThe Normal(Augmented Matrix) is as follows:\n";
-    //   for (int i=0;i<n;i++)            //print the Normal-augmented matrix
-    //   {
-    //       for (int j=0;j<=n;j++)
-    //           cout<<B[i][j]<<setw(16);
-    //       cout<<"\n";
-    //   }
-    // }
-
-    for (int i=0;i<n;i++)                    //From now Gaussian Elimination starts(can be ignored) to solve the set of linear equations (Pivotisation)
-        for (int k=i+1;k<n;k++)
-            if (B[i][i]<B[k][i])
-                for (int j=0;j<=n;j++)
-                {
-                    double temp=B[i][j];
-                    B[i][j]=B[k][j];
-                    B[k][j]=temp;
-                }
-
-    for (int i=0;i<n-1;i++)            //loop to perform the gauss elimination
-        for (int k=i+1;k<n;k++)
-            {
-                double t=B[k][i]/B[i][i];
-                for (int j=0;j<=n;j++)
-                    B[k][j]=B[k][j]-t*B[i][j];    //make the elements below the pivot elements equal to zero or elimnate the variables
-            }
-    for (int i=n-1;i>=0;i--)                //back-substitution
-    {                        //x is an array whose values correspond to the values of x,y,z..
-        a[i]=B[i][n];                //make the variable to be calculated equal to the rhs of the last equation
-        for (int j=0;j<n;j++)
-            if (j!=i)            //then subtract all the lhs values except the coefficient of the variable whose value                                   is being calculated
-                a[i]=a[i]-B[i][j]*a[j];
-        a[i]=a[i]/B[i][i];            //now finally divide the rhs by the coefficient of the variable to be calculated
-    }
-
-    vector<double> coefs;
-    for (int i=0;i<n;i++){
-        coefs.push_back(a[i]);
-    }
-
-    // if(is_test){
-    //     cout<<"\n [INFO]\n";
-    //     for (int i=0;i<n;i++)
-    //         cout<<" + ("<<a[i]<<")"<<"y^"<<i;
-    //     cout<<"\n";
-    // }
-
-    return coefs;
-
-}
+//
+// vector<double> LaneDetector::polyfit(vector<int> vecX, vector<int> vecY, int nDegree)
+// {
+//     // X and Y must be the same size
+//
+//
+//     if(nDegree == 1)
+//     {
+//         vector<Point> pts ;
+//         int sz = vecX.size();
+//         for(int i = 0; i < sz; i++)
+//         {
+//           pts.push_back(Point(vecY[i], vecX[i]));
+//         }
+//
+//         cv::Vec4f linear_line; // (-n, m) normalized vector collinear to the line , (x0,y0)
+//
+//         // cv::fitLine(pts, linear_line, CV_DIST_L2, 1, 0.001, 0.001);
+//         // cv::fitLine(pts, linear_line, DIST_L2, 1, 0.001, 0.001);
+//
+//         // mx + ny + c = 0
+//         double m = linear_line[1];
+//         double n = -linear_line[0];
+//         double x = linear_line[2];
+//         double y = linear_line[3];
+//         double c = - m * x - n * y;
+//
+//         vector<double> rs;
+//         rs.push_back(-c/m);
+//         rs.push_back(-n/m);
+//
+//         return rs;
+//
+//     }
+//
+//
+//     int N = vecX.size();
+//     double x[N],y[N];
+//
+//     for(int i = 0 ; i < N ; i++)
+//     {
+//         x[i] = (double)vecX[i];
+//         y[i] = (double)vecY[i];
+//     }
+//
+//     int n = nDegree;                         // n is the degree of Polynomial
+//     double X[2*n+1];                        //Array that will store the values of sigma(xi),sigma(xi^2),sigma(xi^3)....sigma(xi^2n)
+//     for (int i=0;i<2*n+1;i++)
+//     {
+//         X[i]=0;
+//         for (int j=0;j<N;j++)
+//             X[i]=X[i]+pow(x[j],i);        //consecutive positions of the array will store N,sigma(xi),sigma(xi^2),sigma(xi^3)....sigma(xi^2n)
+//     }
+//     double B[n+1][n+2],a[n+1];            //B is the Normal matrix(augmented) that will store the equations, 'a' is for value of the final coefficients
+//     for (int i=0;i<=n;i++)
+//         for (int j=0;j<=n;j++)
+//             B[i][j]=X[i+j];            //Build the Normal matrix by storing the corresponding coefficients at the right positions except the last column of the matrix
+//     double Y[n+1];                    //Array to store the values of sigma(yi),sigma(xi*yi),sigma(xi^2*yi)...sigma(xi^n*yi)
+//     for (int i=0;i<n+1;i++)
+//     {
+//         Y[i]=0;
+//         for (int j=0;j<N;j++)
+//         Y[i]=Y[i]+pow(x[j],i)*y[j];        //consecutive positions will store sigma(yi),sigma(xi*yi),sigma(xi^2*yi)...sigma(xi^n*yi)
+//     }
+//     for (int i=0;i<=n;i++)
+//         B[i][n+1]=Y[i];                //load the values of Y as the last column of B(Normal Matrix but augmented)
+//     n=n+1;                //n is made n+1 because the Gaussian Elimination part below was for n equations, but here n is the degree of polynomial and for n degree we get n+1 equations
+//     // if(is_test){
+//     //   cout<<"\nThe Normal(Augmented Matrix) is as follows:\n";
+//     //   for (int i=0;i<n;i++)            //print the Normal-augmented matrix
+//     //   {
+//     //       for (int j=0;j<=n;j++)
+//     //           cout<<B[i][j]<<setw(16);
+//     //       cout<<"\n";
+//     //   }
+//     // }
+//
+//     for (int i=0;i<n;i++)                    //From now Gaussian Elimination starts(can be ignored) to solve the set of linear equations (Pivotisation)
+//         for (int k=i+1;k<n;k++)
+//             if (B[i][i]<B[k][i])
+//                 for (int j=0;j<=n;j++)
+//                 {
+//                     double temp=B[i][j];
+//                     B[i][j]=B[k][j];
+//                     B[k][j]=temp;
+//                 }
+//
+//     for (int i=0;i<n-1;i++)            //loop to perform the gauss elimination
+//         for (int k=i+1;k<n;k++)
+//             {
+//                 double t=B[k][i]/B[i][i];
+//                 for (int j=0;j<=n;j++)
+//                     B[k][j]=B[k][j]-t*B[i][j];    //make the elements below the pivot elements equal to zero or elimnate the variables
+//             }
+//     for (int i=n-1;i>=0;i--)                //back-substitution
+//     {                        //x is an array whose values correspond to the values of x,y,z..
+//         a[i]=B[i][n];                //make the variable to be calculated equal to the rhs of the last equation
+//         for (int j=0;j<n;j++)
+//             if (j!=i)            //then subtract all the lhs values except the coefficient of the variable whose value                                   is being calculated
+//                 a[i]=a[i]-B[i][j]*a[j];
+//         a[i]=a[i]/B[i][i];            //now finally divide the rhs by the coefficient of the variable to be calculated
+//     }
+//
+//     vector<double> coefs;
+//     for (int i=0;i<n;i++){
+//         coefs.push_back(a[i]);
+//     }
+//
+//     // if(is_test){
+//     //     cout<<"\n [INFO]\n";
+//     //     for (int i=0;i<n;i++)
+//     //         cout<<" + ("<<a[i]<<")"<<"y^"<<i;
+//     //     cout<<"\n";
+//     // }
+//
+//     return coefs;
+//
+// }
 
 Mat LaneDetector::drawPolylines(Mat &img, vector<Point> pts)
 {
@@ -996,7 +995,7 @@ void LaneDetector::plot_binary_img(string name, const Mat &img)
     Mat plt_img(img);
     plt_img.convertTo(plt_img, CV_64F);
     cv::imshow(name, plt_img);
-    waitKey(1);
+    // waitKey(1);
 }
 
 void LaneDetector::plot_binary_img(string name, const Mat &img, int wait_time)

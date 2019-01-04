@@ -1,32 +1,46 @@
+// for getting current directory execution
+#include <string>
+#include <limits.h>
+#include <unistd.h>
+
 #include <ros/ros.h>
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
 
-#include <opencv2/highgui/highgui.hpp>
-
-#include "lanedetector.h"
-#include "carcontroller.h"
-#include "signrecognizer.h"
-
 #include <ctime>
 #include <boost/timer.hpp>
 
-LaneDetector *lane_detector;
-CarController *car;
+#include "helperfunctions.h"
+#include "carcontroller.h"
 
-double angle , speed ;
+using namespace std;
+using namespace cv;
 
-// Compute FPS
+// ------------------------------------
+string team_name = "Team1";
+// ------------------------------------
+
+CarController *carcontroller;
+
+string getexepath()
+{
+    // for getting current directory execution
+    char result[ PATH_MAX ];
+    ssize_t count = readlink( "/proc/self/exe", result, PATH_MAX );
+    return std::string( result, (count > 0) ? count : 0 );
+}
+
+// check for connection
+bool CHECK_CON = false;
+
+// Compute Fps
 int check_frames = 100;
 int iframe = 0;
 boost::timer t;
 
-
-bool CHECK_CON = false; // check for connection
-
-// When subscribing  images
-void imageCallback(const sensor_msgs::ImageConstPtr& msg)
+void image_callback(const sensor_msgs::ImageConstPtr& msg)
 {
+    // When subscribing  images
     // Compute Fps
     if (iframe == 0){
         // begin
@@ -59,8 +73,8 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
         imshow("View", out);
         waitKey(1);
 
-        lane_detector->detect(cv_ptr->image, angle, speed);
-        car->driverCar(angle, speed);
+        // put img for carcontroller
+        carcontroller->main_processing(cv_ptr->image);
     }
     catch (cv_bridge::Exception& e)
     {
@@ -69,103 +83,31 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
     }
 }
 
-/* MAIN PROCESS */
+
+/* MAIN */
 int main(int argc, char **argv)
 {
+    // Initialize and Activate
     ros::init(argc, argv, "image_listener");
+    cv::namedWindow("View");
+    cv::startWindowThread();
 
-    // initialize ~
-    lane_detector = new LaneDetector();
-    car = new CarController();
+    // CarController is the main processing including
+    // lane detecting, sign recognizer and
+    // computing angle,speed for drving car
+    carcontroller = new CarController(team_name);
 
-    int w = lane_detector->w;
-    int h = lane_detector->h;
-
-    // ======================================================
-    // ======================= SET VALUE ====================
-    // ======================================================
-    // Team1 - ws://127.0.0.1:9090
-    /*
-      It follows the priority ! if the previous one is set to true
-      then, all the next ones cannot be executed
-    */
-    bool is_test_image = false ;
-    bool is_test_video = false;
-    bool is_real = true ;
-    int i_test_video = 14*24;  // 1s = 24 frames
-
-    // STAGE 1 : choosing 4 points
-    lane_detector->src = {
-      Point2f(w*2/7-10,h/2-10), // top left
-      Point2f(0,h*4/5-3), // bottom left
-      Point2f(w*6/7+35,h*4/5-3), // top right
-      Point2f(w*2/3+10,h/2-10) // bottom right
-    };
-
-    lane_detector->dst = {
-      Point2f(w*2/7-10,h/2-10),
-      Point2f(w*2/7-10,h*4/5-3),
-      Point2f(w*5/7+10,h*4/5-3),
-      Point2f(w*5/7+10,h/2-10)
-    };
-
-    // STAGE 2 :
-    lane_detector->sobel_kernel = 3;
-    lane_detector->abs_sobel_thresh_range_x = {20,100};
-    lane_detector->abs_sobel_thresh_range_y = {20,100};
-    lane_detector->mag_thresh_range = {30,100};
-    lane_detector->dir_thresh_range = {0.7,1.3};
-    lane_detector->color_thresh_low = {102,63,63}; // bgr
-    lane_detector->color_thresh_high = {255,170,170};
-    // lane_detector->color_thresh_low = {180,180,200}; // bgr
-    // lane_detector->color_thresh_high = {255,255,255};
-
-    // STAGE 3 :
-    lane_detector->margin =40;
-    lane_detector->minpix = 20;
-    lane_detector->nwindows = 9;
-    lane_detector->ewindow = 4;
-
-    // STAGE 3:
+    // SHOW INFORMATION
+    cout << "[INFO] Team name: " << team_name << "\n";
+    cout << "[INFO] Image Size = " << Size(carcontroller->h,carcontroller->w) << "\n";
+    cout << "[INFO] OpenCV version : " << CV_VERSION << " , " << CV_MAJOR_VERSION << "\n";
+    cout << "[INFO] Current dir: " << getexepath() << "\n";
 
 
-    // ========================<>=======================
-    // Team1 - ws://127.0.0.1:9090
+    ros::NodeHandle nh;
+    image_transport::ImageTransport it(nh);
+    image_transport::Subscriber sub = it.subscribe(team_name + "_image", 1, image_callback);
 
-    if (is_test_image) {
-
-        lane_detector->is_test = true ;
-        Mat img = cv::imread("/home/yus/Documents/Pic/noise.png");
-
-        double angle = 0;
-        double spped = 0;
-        lane_detector->detect(img, angle, speed );
-
-    } else if(is_test_video){
-
-        // path file , the order of frame
-        //220
-        //250
-        lane_detector->videoProcess("/home/yus/Documents/Video/out.avi");
-
-    } else if(is_real){
-
-        cv::namedWindow("View");
-        cv::startWindowThread();
-
-        // writer = cv::VideoWriter("/home/yus/Documents/Video/out.avi", VideoWriter::fourcc('M','J','P','G'), 24, Size(h,w)); // 24 Fps
-        std::cout << " [INFO] Image Size = " << Size(h,w) << std::endl;
-        std::cout << "[INFO] OpenCV version : " << CV_VERSION << endl;
-        ros::NodeHandle nh;
-
-        image_transport::ImageTransport it(nh);
-        image_transport::Subscriber sub = it.subscribe("Team1_image", 1, imageCallback);
-
-        ros::spin();
-        // writer.release();
-    } else {
-
-    }
-
-    cv::destroyAllWindows();
+    // Single-threaded Spinning
+    ros::spin();
 }

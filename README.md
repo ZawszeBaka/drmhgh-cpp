@@ -1,7 +1,14 @@
 Team1
 ws://127.0.0.1:9090
 
+roslaunch lane_detect lane_detect.launch
+
 Install OpenCV to virtualenv # recommended
+
+pkg-config --modversion opencv // check opencv version
+dpkg --get-selections | grep opencv // installed packages
+dpkg -l | grep opencv // list all the packages
+dpkg -L | grep opencv // list all installed packages
 
 # ROS_Package_example
 ## I. Installation

@@ -3,6 +3,7 @@
 
 lane_detect/CMakeFiles/lane_detect.dir/src/main.cpp.o
  /home/yus/Documents/ROS/my_project/src/lane_detect/include/carcontroller.h
+ /home/yus/Documents/ROS/my_project/src/lane_detect/include/helperfunctions.h
  /home/yus/Documents/ROS/my_project/src/lane_detect/include/lanedetector.h
  /home/yus/Documents/ROS/my_project/src/lane_detect/include/signrecognizer.h
  /home/yus/Documents/ROS/my_project/src/lane_detect/src/main.cpp
@@ -168,6 +169,7 @@ lane_detect/CMakeFiles/lane_detect.dir/src/main.cpp.o
  /usr/local/include/opencv2/ml/ml.inl.hpp
  /usr/local/include/opencv2/objdetect.hpp
  /usr/local/include/opencv2/objdetect/detection_based_tracker.hpp
+ /usr/local/include/opencv2/objdetect/objdetect.hpp
  /usr/local/include/opencv2/objdetect/objdetect_c.h
  /usr/local/include/opencv2/opencv.hpp
  /usr/local/include/opencv2/opencv_modules.hpp
