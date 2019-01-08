@@ -53,6 +53,8 @@ opencv2/highgui/highgui.hpp
 -
 opencv2/imgproc.hpp
 -
+ros/ros.h
+-
 
 /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/include/svmprocess.h
 opencv2/core.hpp
@@ -67,10 +69,12 @@ opencv2/ml.hpp
 -
 fstream
 -
-string
+ros/package.h
 -
 ros/ros.h
 -
+signrecognizer.h
+/home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/include/signrecognizer.h
 
 /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/src/main.cpp
 string
@@ -89,10 +93,14 @@ ctime
 -
 boost/timer.hpp
 -
+ros/package.h
+-
 helperfunctions.h
 /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/src/helperfunctions.h
 carcontroller.h
 /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/src/carcontroller.h
+svmprocess.h
+/home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/src/svmprocess.h
 
 /opt/ros/lunar/include/cv_bridge/cv_bridge.h
 sensor_msgs/Image.h
@@ -456,6 +464,16 @@ common.h
 boost/bind.hpp
 -
 xmlrpcpp/XmlRpcValue.h
+-
+
+/opt/ros/lunar/include/ros/package.h
+string
+-
+utility
+-
+vector
+-
+map
 -
 
 /opt/ros/lunar/include/ros/param.h

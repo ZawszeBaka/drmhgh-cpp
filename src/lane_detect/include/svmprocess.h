@@ -8,9 +8,11 @@
 #include <opencv2/ml.hpp>
 
 #include <fstream>
-#include <string>
 
+#include <ros/package.h>
 #include <ros/ros.h>
+
+#include "signrecognizer.h"
 
 using namespace std;
 using namespace cv;
@@ -23,14 +25,24 @@ public:
     ~SVMProcess();
 
     Ptr<SVM> svm ;
+    Ptr<HOGDescriptor> hog;
 
-    Mat X; // data
-    Mat y; // labels
+    Mat* X; // data
+    Mat* y; // labels
 
-    void get_train_data(string path);
+    Size *winSize;
+    Size *blockSize;
+    Size *blockStride;
+    Size *cellSize;
+    int nbins;
+
+    void get_train_data();
+    vector<float> extract_HOG(const Mat &gray);
+
     void train(const Mat &X, const Mat &y);
     void predict();
-
+    void save_model(string path);
+    void load_model(string path);
 private:
 
 };

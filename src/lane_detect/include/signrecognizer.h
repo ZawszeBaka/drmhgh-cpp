@@ -7,7 +7,7 @@
 // #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/imgproc.hpp>
 
-// #include <ros/ros.h>
+#include <ros/ros.h>
 
 using namespace std;
 using namespace cv;

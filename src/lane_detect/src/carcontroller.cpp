@@ -90,5 +90,5 @@ void CarController::main_processing(const Mat &img)
 
     // test SVM
     svmprocess = new SVMProcess();
-
+    std::cout << "[DEBUGGGGG]";
 }

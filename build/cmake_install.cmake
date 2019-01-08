@@ -117,7 +117,6 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/non/Documents/ROS/drmhgh-cpp/build/gtest/cmake_install.cmake")
-  include("/home/non/Documents/ROS/drmhgh-cpp/build/file_server/cmake_install.cmake")
   include("/home/non/Documents/ROS/drmhgh-cpp/build/lane_detect/cmake_install.cmake")
 
 endif()

@@ -1,2 +1,2 @@
-file_server:lane_detect
+lane_detect
 -DCATKIN_DEVEL_PREFIX=/home/non/Documents/ROS/drmhgh-cpp/devel -DCMAKE_INSTALL_PREFIX=/home/non/Documents/ROS/drmhgh-cpp/install -G Unix Makefiles

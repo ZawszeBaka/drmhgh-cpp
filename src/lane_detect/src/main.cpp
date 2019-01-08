@@ -10,8 +10,11 @@
 #include <ctime>
 #include <boost/timer.hpp>
 
+#include <ros/package.h> 
+
 #include "helperfunctions.h"
 #include "carcontroller.h"
+#include "svmprocess.h"
 
 using namespace std;
 using namespace cv;
@@ -21,6 +24,7 @@ string team_name = "Team1";
 // ------------------------------------
 
 CarController *carcontroller;
+SVMProcess *svmprocess;
 
 string getexepath()
 {
@@ -102,6 +106,10 @@ int main(int argc, char **argv)
     cout << "[INFO] Image Size = " << Size(carcontroller->h,carcontroller->w) << "\n";
     cout << "[INFO] OpenCV version : " << CV_VERSION << " , " << CV_MAJOR_VERSION << "\n";
     cout << "[INFO] Current dir: " << getexepath() << "\n";
+    cout << "[INFO] Package directory " << ros::package::getPath("lane_detect") << "\n";
+
+    // for train SVM
+    svmprocess = new SVMProcess();
 
 
     ros::NodeHandle nh;

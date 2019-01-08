@@ -40,6 +40,7 @@ lane_detect/CMakeFiles/lane_detect.dir/src/main.cpp.o
  /opt/ros/lunar/include/ros/message_traits.h
  /opt/ros/lunar/include/ros/names.h
  /opt/ros/lunar/include/ros/node_handle.h
+ /opt/ros/lunar/include/ros/package.h
  /opt/ros/lunar/include/ros/param.h
  /opt/ros/lunar/include/ros/parameter_adapter.h
  /opt/ros/lunar/include/ros/platform.h
