@@ -7,4 +7,4 @@
 # new environment variables
 
 # modified environment variables
-export PWD="/home/yus/Documents/ROS/my_project/build"
+export PWD="/home/non/Documents/ROS/drmhgh-cpp/build"

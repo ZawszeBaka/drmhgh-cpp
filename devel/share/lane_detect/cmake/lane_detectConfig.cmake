@@ -67,14 +67,14 @@ set(lane_detect_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("TRUE" STREQUAL "TRUE")
-  set(lane_detect_SOURCE_PREFIX /home/yus/Documents/ROS/my_project/src/lane_detect)
-  set(lane_detect_DEVEL_PREFIX /home/yus/Documents/ROS/my_project/devel)
+  set(lane_detect_SOURCE_PREFIX /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect)
+  set(lane_detect_DEVEL_PREFIX /home/non/Documents/ROS/drmhgh-cpp/devel)
   set(lane_detect_INSTALL_PREFIX "")
   set(lane_detect_PREFIX ${lane_detect_DEVEL_PREFIX})
 else()
   set(lane_detect_SOURCE_PREFIX "")
   set(lane_detect_DEVEL_PREFIX "")
-  set(lane_detect_INSTALL_PREFIX /home/yus/Documents/ROS/my_project/install)
+  set(lane_detect_INSTALL_PREFIX /home/non/Documents/ROS/drmhgh-cpp/install)
   set(lane_detect_PREFIX ${lane_detect_INSTALL_PREFIX})
 endif()
 
@@ -91,9 +91,9 @@ endif()
 # flag project as catkin-based to distinguish if a find_package()-ed project is a catkin project
 set(lane_detect_FOUND_CATKIN_PROJECT TRUE)
 
-if(NOT "/home/yus/Documents/ROS/my_project/src/lane_detect/include " STREQUAL " ")
+if(NOT "/home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/include " STREQUAL " ")
   set(lane_detect_INCLUDE_DIRS "")
-  set(_include_dirs "/home/yus/Documents/ROS/my_project/src/lane_detect/include")
+  set(_include_dirs "/home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/include")
   if(NOT " " STREQUAL " ")
     set(_report "Check the issue tracker '' and consider creating a ticket if the problem has not been reported yet.")
   elseif(NOT " " STREQUAL " ")
@@ -110,7 +110,7 @@ if(NOT "/home/yus/Documents/ROS/my_project/src/lane_detect/include " STREQUAL " 
         message(FATAL_ERROR "Project 'lane_detect' specifies '${idir}' as an include dir, which is not found.  It does not exist in '${include}'.  ${_report}")
       endif()
     else()
-      message(FATAL_ERROR "Project 'lane_detect' specifies '${idir}' as an include dir, which is not found.  It does neither exist as an absolute directory nor in '/home/yus/Documents/ROS/my_project/src/lane_detect/${idir}'.  ${_report}")
+      message(FATAL_ERROR "Project 'lane_detect' specifies '${idir}' as an include dir, which is not found.  It does neither exist as an absolute directory nor in '/home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/${idir}'.  ${_report}")
     endif()
     _list_append_unique(lane_detect_INCLUDE_DIRS ${include})
   endforeach()
@@ -129,7 +129,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/yus/Documents/ROS/my_project/devel/lib;/home/yus/Documents/ROS/my_project/devel/lib;/opt/ros/melodic/lib)
+    foreach(path /home/non/Documents/ROS/drmhgh-cpp/devel/lib;/home/non/Documents/ROS/drmhgh-cpp/devel/lib;/opt/ros/lunar/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/file_server_generate_messages_py"
-  "/home/yus/Documents/ROS/my_project/devel/lib/python2.7/dist-packages/file_server/srv/_GetBinaryFile.py"
-  "/home/yus/Documents/ROS/my_project/devel/lib/python2.7/dist-packages/file_server/srv/__init__.py"
+  "/home/non/Documents/ROS/drmhgh-cpp/devel/lib/python2.7/dist-packages/file_server/srv/_GetBinaryFile.py"
+  "/home/non/Documents/ROS/drmhgh-cpp/devel/lib/python2.7/dist-packages/file_server/srv/__init__.py"
 )
 
 # Per-language clean rules from dependency scanning.

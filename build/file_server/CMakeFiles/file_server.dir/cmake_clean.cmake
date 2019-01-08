@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/file_server.dir/src/file_server.cpp.o"
-  "/home/yus/Documents/ROS/my_project/devel/lib/file_server/file_server.pdb"
-  "/home/yus/Documents/ROS/my_project/devel/lib/file_server/file_server"
+  "/home/non/Documents/ROS/drmhgh-cpp/devel/lib/file_server/file_server.pdb"
+  "/home/non/Documents/ROS/drmhgh-cpp/devel/lib/file_server/file_server"
 )
 
 # Per-language clean rules from dependency scanning.

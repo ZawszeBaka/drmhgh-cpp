@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/file_server_generate_messages_cpp"
-  "/home/yus/Documents/ROS/my_project/devel/include/file_server/GetBinaryFile.h"
+  "/home/non/Documents/ROS/drmhgh-cpp/devel/include/file_server/GetBinaryFile.h"
 )
 
 # Per-language clean rules from dependency scanning.

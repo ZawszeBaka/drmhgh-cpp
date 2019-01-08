@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/yus/Documents/ROS/my_project/src/lane_detect/src/main.cpp" "/home/yus/Documents/ROS/my_project/build/lane_detect/CMakeFiles/lane_detect.dir/src/main.cpp.o"
+  "/home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/src/main.cpp" "/home/non/Documents/ROS/drmhgh-cpp/build/lane_detect/CMakeFiles/lane_detect.dir/src/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -19,15 +19,16 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/usr/local/include"
   "/usr/local/include/opencv"
-  "/home/yus/Documents/ROS/my_project/src/lane_detect/include"
-  "/opt/ros/melodic/include"
-  "/opt/ros/melodic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp"
-  "/usr/include/opencv"
+  "/home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/include"
+  "/opt/ros/lunar/include"
+  "/opt/ros/lunar/include/opencv-3.3.1-dev"
+  "/opt/ros/lunar/include/opencv-3.3.1-dev/opencv"
+  "/opt/ros/lunar/share/xmlrpcpp/cmake/../../../include/xmlrpcpp"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/yus/Documents/ROS/my_project/build/lane_detect/CMakeFiles/api_lane_detection.dir/DependInfo.cmake"
+  "/home/non/Documents/ROS/drmhgh-cpp/build/lane_detect/CMakeFiles/api_lane_detection.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

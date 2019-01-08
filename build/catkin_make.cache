@@ -1,2 +1,2 @@
 file_server:lane_detect
--DOpenCV_DIR=/usr/local/share/OpenCV -DCATKIN_DEVEL_PREFIX=/home/yus/Documents/ROS/my_project/devel -DCMAKE_INSTALL_PREFIX=/home/yus/Documents/ROS/my_project/install -G Unix Makefiles
+-DCATKIN_DEVEL_PREFIX=/home/non/Documents/ROS/drmhgh-cpp/devel -DCMAKE_INSTALL_PREFIX=/home/non/Documents/ROS/drmhgh-cpp/install -G Unix Makefiles

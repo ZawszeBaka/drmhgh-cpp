@@ -32,6 +32,7 @@ add_library(api_lane_detection
   src/carcontroller.cpp
   src/signrecognizer.cpp
   src/helperfunctions.cpp
+  src/svmprocess.cpp
 )
 
 add_executable(lane_detect src/main.cpp)

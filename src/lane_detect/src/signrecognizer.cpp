@@ -3,7 +3,7 @@
 SignRecognizer::SignRecognizer()
 {
     // if using Haar Cascade Detection
-    bool ret = sign_cascade.load("/home/yus/Documents/ROS/my_project/src/lane_detect/cascade/right.xml");
+    bool ret = sign_cascade.load("/home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/cascade/right.xml");
     if (!ret){
       // std::cout << "[ERROR] Reading cascade file Failed ! Make sure the path exists \n";
     }

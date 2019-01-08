@@ -10,7 +10,7 @@
 #include <math.h>
 #include <algorithm>
 
-#include <python3.6m/Python.h>
+// #include <python3.6m/Python.h>
 
 #include <typeinfo>
 
@@ -62,30 +62,30 @@ public:
 
     // absolute sobel threshold
     int sobel_kernel = 3;  // 3x3 sobel kernel matrix
-    array<int,2> abs_sobel_thresh_range = {0,255}; // default for abs_sobel_thresh
+    std::array<int,2> abs_sobel_thresh_range {{0,255}}; // default for abs_sobel_thresh
     Mat abs_sobel_thresh(const Mat &gray, char orient); // orient = 'x' or 'y'
 
     // magnitude threshold
-    array<int,2> mag_thresh_range = {30,100}; // {0,255}
+    array<int,2> mag_thresh_range {{30,100}}; // {0,255}
     Mat mag_thresh(const Mat &gray);
 
     // direction threshold
-    array<float,2> dir_thresh_range = {0.7, 1.3}; // {0, M_PI/2}
+    array<float,2> dir_thresh_range {{0.7, 1.3}}; // {0, M_PI/2}
     Mat dir_thresh(const Mat &gray);
 
     // apply gradient threshold: combination of
     //    absolute sobel threshold,
     //    magnitude threshold
     //    direction threshold
-    array<int,2> abs_sobel_thresh_range_x = {20,100};
-    array<int,2> abs_sobel_thresh_range_y = {20,100};
+    array<int,2> abs_sobel_thresh_range_x {{20,100}};
+    array<int,2> abs_sobel_thresh_range_y {{20,100}};
     Mat apply_gradient_threshold(const Mat &gray);
 
     // apply color threshold
     float s_thresh_min = 0 ;
     float s_thresh_max = 1 ;
-    vector<double> color_thresh_low = {0,0,0};
-    vector<double> color_thresh_high = {10,10,10};
+    vector<double> color_thresh_low {{0,0,0}};
+    vector<double> color_thresh_high {{10,10,10}};
     Mat apply_color_threshold(const Mat &img);
 
     // combine both gradient threshold and color threshold with operator OR

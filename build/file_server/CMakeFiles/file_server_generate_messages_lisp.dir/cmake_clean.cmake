@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/file_server_generate_messages_lisp"
-  "/home/yus/Documents/ROS/my_project/devel/share/common-lisp/ros/file_server/srv/GetBinaryFile.lisp"
+  "/home/non/Documents/ROS/drmhgh-cpp/devel/share/common-lisp/ros/file_server/srv/GetBinaryFile.lisp"
 )
 
 # Per-language clean rules from dependency scanning.

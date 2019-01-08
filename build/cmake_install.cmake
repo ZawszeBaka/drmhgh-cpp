@@ -1,8 +1,8 @@
-# Install script for directory: /home/yus/Documents/ROS/my_project/src
+# Install script for directory: /home/non/Documents/ROS/drmhgh-cpp/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/yus/Documents/ROS/my_project/install")
+  set(CMAKE_INSTALL_PREFIX "/home/non/Documents/ROS/drmhgh-cpp/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -32,12 +32,7 @@ if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
   set(CMAKE_INSTALL_SO_NO_EXE "1")
 endif()
 
-# Is this installation the result of a crosscompile?
-if(NOT DEFINED CMAKE_CROSSCOMPILING)
-  set(CMAKE_CROSSCOMPILING "FALSE")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   
       if (NOT EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}")
         file(MAKE_DIRECTORY "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}")
@@ -47,83 +42,83 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
       endif()
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/yus/Documents/ROS/my_project/install/_setup_util.py")
+   "/home/non/Documents/ROS/drmhgh-cpp/install/_setup_util.py")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/yus/Documents/ROS/my_project/install" TYPE PROGRAM FILES "/home/yus/Documents/ROS/my_project/build/catkin_generated/installspace/_setup_util.py")
+file(INSTALL DESTINATION "/home/non/Documents/ROS/drmhgh-cpp/install" TYPE PROGRAM FILES "/home/non/Documents/ROS/drmhgh-cpp/build/catkin_generated/installspace/_setup_util.py")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/yus/Documents/ROS/my_project/install/env.sh")
+   "/home/non/Documents/ROS/drmhgh-cpp/install/env.sh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/yus/Documents/ROS/my_project/install" TYPE PROGRAM FILES "/home/yus/Documents/ROS/my_project/build/catkin_generated/installspace/env.sh")
+file(INSTALL DESTINATION "/home/non/Documents/ROS/drmhgh-cpp/install" TYPE PROGRAM FILES "/home/non/Documents/ROS/drmhgh-cpp/build/catkin_generated/installspace/env.sh")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/yus/Documents/ROS/my_project/install/setup.bash")
+   "/home/non/Documents/ROS/drmhgh-cpp/install/setup.bash")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/yus/Documents/ROS/my_project/install" TYPE FILE FILES "/home/yus/Documents/ROS/my_project/build/catkin_generated/installspace/setup.bash")
+file(INSTALL DESTINATION "/home/non/Documents/ROS/drmhgh-cpp/install" TYPE FILE FILES "/home/non/Documents/ROS/drmhgh-cpp/build/catkin_generated/installspace/setup.bash")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/yus/Documents/ROS/my_project/install/setup.sh")
+   "/home/non/Documents/ROS/drmhgh-cpp/install/setup.sh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/yus/Documents/ROS/my_project/install" TYPE FILE FILES "/home/yus/Documents/ROS/my_project/build/catkin_generated/installspace/setup.sh")
+file(INSTALL DESTINATION "/home/non/Documents/ROS/drmhgh-cpp/install" TYPE FILE FILES "/home/non/Documents/ROS/drmhgh-cpp/build/catkin_generated/installspace/setup.sh")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/yus/Documents/ROS/my_project/install/setup.zsh")
+   "/home/non/Documents/ROS/drmhgh-cpp/install/setup.zsh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/yus/Documents/ROS/my_project/install" TYPE FILE FILES "/home/yus/Documents/ROS/my_project/build/catkin_generated/installspace/setup.zsh")
+file(INSTALL DESTINATION "/home/non/Documents/ROS/drmhgh-cpp/install" TYPE FILE FILES "/home/non/Documents/ROS/drmhgh-cpp/build/catkin_generated/installspace/setup.zsh")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/yus/Documents/ROS/my_project/install/.rosinstall")
+   "/home/non/Documents/ROS/drmhgh-cpp/install/.rosinstall")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/yus/Documents/ROS/my_project/install" TYPE FILE FILES "/home/yus/Documents/ROS/my_project/build/catkin_generated/installspace/.rosinstall")
+file(INSTALL DESTINATION "/home/non/Documents/ROS/drmhgh-cpp/install" TYPE FILE FILES "/home/non/Documents/ROS/drmhgh-cpp/build/catkin_generated/installspace/.rosinstall")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/yus/Documents/ROS/my_project/build/gtest/cmake_install.cmake")
-  include("/home/yus/Documents/ROS/my_project/build/file_server/cmake_install.cmake")
-  include("/home/yus/Documents/ROS/my_project/build/lane_detect/cmake_install.cmake")
+  include("/home/non/Documents/ROS/drmhgh-cpp/build/gtest/cmake_install.cmake")
+  include("/home/non/Documents/ROS/drmhgh-cpp/build/file_server/cmake_install.cmake")
+  include("/home/non/Documents/ROS/drmhgh-cpp/build/lane_detect/cmake_install.cmake")
 
 endif()
 
@@ -135,5 +130,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/yus/Documents/ROS/my_project/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/non/Documents/ROS/drmhgh-cpp/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

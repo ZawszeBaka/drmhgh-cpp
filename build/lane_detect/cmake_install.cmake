@@ -1,8 +1,8 @@
-# Install script for directory: /home/yus/Documents/ROS/my_project/src/lane_detect
+# Install script for directory: /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/yus/Documents/ROS/my_project/install")
+  set(CMAKE_INSTALL_PREFIX "/home/non/Documents/ROS/drmhgh-cpp/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -32,23 +32,18 @@ if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
   set(CMAKE_INSTALL_SO_NO_EXE "1")
 endif()
 
-# Is this installation the result of a crosscompile?
-if(NOT DEFINED CMAKE_CROSSCOMPILING)
-  set(CMAKE_CROSSCOMPILING "FALSE")
+if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/non/Documents/ROS/drmhgh-cpp/build/lane_detect/catkin_generated/installspace/lane_detect.pc")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/yus/Documents/ROS/my_project/build/lane_detect/catkin_generated/installspace/lane_detect.pc")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/lane_detect/cmake" TYPE FILE FILES
-    "/home/yus/Documents/ROS/my_project/build/lane_detect/catkin_generated/installspace/lane_detectConfig.cmake"
-    "/home/yus/Documents/ROS/my_project/build/lane_detect/catkin_generated/installspace/lane_detectConfig-version.cmake"
+    "/home/non/Documents/ROS/drmhgh-cpp/build/lane_detect/catkin_generated/installspace/lane_detectConfig.cmake"
+    "/home/non/Documents/ROS/drmhgh-cpp/build/lane_detect/catkin_generated/installspace/lane_detectConfig-version.cmake"
     )
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/lane_detect" TYPE FILE FILES "/home/yus/Documents/ROS/my_project/src/lane_detect/package.xml")
+if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/lane_detect" TYPE FILE FILES "/home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/package.xml")
 endif()
 
