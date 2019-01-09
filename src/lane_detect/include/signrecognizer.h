@@ -9,6 +9,8 @@
 
 #include <ros/ros.h>
 
+#include "svmprocess.h"
+
 using namespace std;
 using namespace cv;
 
@@ -18,14 +20,14 @@ public:
     SignRecognizer();
     ~SignRecognizer();
 
+    SVMProcess *svmprocess;
+
     void detect(const Mat &gray);
 
     // if using haar cascade detection
     CascadeClassifier sign_cascade;
     bool haarcascade_detect(const Mat &img,
             const Mat &gray, Rect &s, Mat &img_with_signs);// returns true if detected at least 1 sign
-
-
 
 private:
 

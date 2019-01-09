@@ -25,8 +25,6 @@ lanedetector.h
 /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/include/lanedetector.h
 signrecognizer.h
 /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/include/signrecognizer.h
-svmprocess.h
-/home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/include/svmprocess.h
 
 /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/include/helperfunctions.h
 
@@ -55,6 +53,8 @@ opencv2/imgproc.hpp
 -
 ros/ros.h
 -
+svmprocess.h
+/home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/include/svmprocess.h
 
 /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/include/svmprocess.h
 opencv2/core.hpp
@@ -67,14 +67,14 @@ opencv2/highgui.hpp
 -
 opencv2/ml.hpp
 -
+opencv2/objdetect.hpp
+-
 fstream
 -
 ros/package.h
 -
 ros/ros.h
 -
-signrecognizer.h
-/home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/include/signrecognizer.h
 
 /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/src/main.cpp
 string

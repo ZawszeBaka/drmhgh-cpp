@@ -14,7 +14,6 @@
 
 #include "lanedetector.h"
 #include "signrecognizer.h"
-#include "svmprocess.h"
 
 using namespace std;
 using namespace cv;
@@ -29,7 +28,6 @@ public:
 
     LaneDetector *lane_detector;
     SignRecognizer *sign_recognizer;
-    SVMProcess *svmprocess;
 
     // fix size of input image
     int w;

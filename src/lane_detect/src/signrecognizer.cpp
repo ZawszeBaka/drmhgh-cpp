@@ -7,6 +7,7 @@ SignRecognizer::SignRecognizer()
     if (!ret){
       // std::cout << "[ERROR] Reading cascade file Failed ! Make sure the path exists \n";
     }
+    svmprocess = new SVMProcess();
 }
 
 SignRecognizer::~SignRecognizer()
@@ -32,15 +33,16 @@ void SignRecognizer::detect(const Mat &img)
     //
     // draw rectangle if detecting signs
     if (is_detected){
-        // std::cout << "[DEBUG] Detected Sign\n";
         tmp_region_of_sign = img(s);
-        // cv::resize(tmp_region_of_sign, region_of_sign,Size(40,40),0,0, cv::INTER_LINEAR );
-        region_of_sign = tmp_region_of_sign;
-        img_with_signs(Rect(0,0,region_of_sign.size().width,region_of_sign.size().height)) = region_of_sign;
+        cv::resize(tmp_region_of_sign, region_of_sign,Size(20,20),0,0, cv::INTER_LINEAR );
+        string rs = svmprocess->predict(region_of_sign);
+        cout << "[DEBUG] Detected Sign : " << rs << "\n";
+        // region_of_sign = tmp_region_of_sign;
+        // img_with_signs(Rect(0,0,region_of_sign.size().width,region_of_sign.size().height)) = region_of_sign;
     }
 
     cv::imshow("Sign Detection", img_with_signs);
-    // cv::waitKey(1);
+    // cv::waitKey();
 }
 
 bool SignRecognizer::haarcascade_detect(const Mat &img,

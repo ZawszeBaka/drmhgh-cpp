@@ -83,12 +83,8 @@ void CarController::main_processing(const Mat &img)
     */
     double angle;
     double speed;
-    // lane_detector->detect(img, angle, speed);
-    // sign_recognizer->detect(img);
-    // driverCar(angle, speed);
+    lane_detector->detect(img, angle, speed);
+    sign_recognizer->detect(img);
+    driverCar(angle, speed);
     // cv::waitKey(1);
-
-    // test SVM
-    svmprocess = new SVMProcess();
-    std::cout << "[DEBUGGGGG]";
 }

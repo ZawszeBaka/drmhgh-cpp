@@ -407,6 +407,7 @@ lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o
  /usr/local/include/opencv2/xfeatures2d/cuda.hpp
 lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o
  /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/include/signrecognizer.h
+ /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/include/svmprocess.h
  /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/src/signrecognizer.cpp
  /opt/ros/lunar/include/ros/advertise_options.h
  /opt/ros/lunar/include/ros/advertise_service_options.h
@@ -429,6 +430,7 @@ lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o
  /opt/ros/lunar/include/ros/message_traits.h
  /opt/ros/lunar/include/ros/names.h
  /opt/ros/lunar/include/ros/node_handle.h
+ /opt/ros/lunar/include/ros/package.h
  /opt/ros/lunar/include/ros/param.h
  /opt/ros/lunar/include/ros/parameter_adapter.h
  /opt/ros/lunar/include/ros/platform.h
@@ -603,7 +605,6 @@ lane_detect/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o
  /usr/local/include/opencv2/viz/widgets.hpp
  /usr/local/include/opencv2/xfeatures2d/cuda.hpp
 lane_detect/CMakeFiles/api_lane_detection.dir/src/svmprocess.cpp.o
- /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/include/signrecognizer.h
  /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/include/svmprocess.h
  /home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/src/svmprocess.cpp
  /opt/ros/lunar/include/ros/advertise_options.h
@@ -738,7 +739,6 @@ lane_detect/CMakeFiles/api_lane_detection.dir/src/svmprocess.cpp.o
  /usr/local/include/opencv2/flann/saving.h
  /usr/local/include/opencv2/flann/timer.h
  /usr/local/include/opencv2/highgui.hpp
- /usr/local/include/opencv2/highgui/highgui.hpp
  /usr/local/include/opencv2/highgui/highgui_c.h
  /usr/local/include/opencv2/imgcodecs.hpp
  /usr/local/include/opencv2/imgcodecs/imgcodecs_c.h
@@ -749,7 +749,6 @@ lane_detect/CMakeFiles/api_lane_detection.dir/src/svmprocess.cpp.o
  /usr/local/include/opencv2/ml/ml.inl.hpp
  /usr/local/include/opencv2/objdetect.hpp
  /usr/local/include/opencv2/objdetect/detection_based_tracker.hpp
- /usr/local/include/opencv2/objdetect/objdetect.hpp
  /usr/local/include/opencv2/objdetect/objdetect_c.h
  /usr/local/include/opencv2/opencv.hpp
  /usr/local/include/opencv2/opencv_modules.hpp
