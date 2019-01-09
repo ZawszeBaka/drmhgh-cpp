@@ -25,11 +25,17 @@ public:
     LaneDetector();
     ~LaneDetector();
 
+
+    double cur_speed=0; // current speed of the car
+
     /*
     Width and height of input image , which is fixed size !
     */
     int w = 320;
     int h = 240;
+
+    VideoWriter *video;
+    VideoWriter *video2;
 
     //
     bool reduced = true;
@@ -45,7 +51,8 @@ public:
       angle: angle (in degree limited between (-50,50))
       speed: speed
     */
-    void detect(const Mat &img, double &angle, double &speed);
+    void detect(const Mat &img, const Mat &gray_img,
+                double &angle, double &speed);
 
     // =============== STAGE 1 ===================
     // 4 chosen pts
@@ -95,19 +102,86 @@ public:
     Mat get_histogram(const Mat &binary_warped);
 
     // slide windows
-    int margin = 50 ;
-    int minpix = 50 ;
-    int nwindows = 9;
-    int ewindow = 3; //
+    int margin = 40 ; // => window_width = 60
+    int window_height = 30;
+    int minpix = 20 ;
+
+    int nwindows;
+    int stridepix;
+    int bwindow;
+    int ewindow;
+
+    // Mode "non-sign"
+    int non_nwindows = 15; // ewindow must be smaller than nwindows
+    int non_stridepix = 15;
+    int non_bwindow = 4;
+    int non_ewindow = 6; //
+
+    // Mode "left-sign" or "right-sign"
+    // int sign_nwindows = 40; // ewindow must be smaller than nwindows
+    // int sign_stridepix = 5;
+    // int sign_bwindow = 10;
+    // int sign_ewindow = 16;
+    int sign_nwindows = 15; // ewindow must be smaller than nwindows
+    int sign_stridepix = 15;
+    int sign_bwindow = 4;
+    int sign_ewindow = 6;
+
     // return false if cannot detect lane
     bool slide_window(const Mat &binary_warped,
                       const Mat &histogram,
-                      vector<Point2f> &center_windows);
+                      vector<Point2f> &center_windows,
+                    vector<Point2f> &left_pts,
+                  vector<Point2f> &right_pts);
     int find_midpoint(const Mat &hist, float eps);
     double calc_mean(const Mat &hist, int x_min, int x_max);
 
     // ============== STAGE 4 =================
-    double calc_angle(std::vector<Point2f> center_windows);
+    /*
+      mode = 0  # left
+      mode = 1  # right
+      mode = 2  # non-sign
+    */
+    int mode = 2; // left, right non-sign
+    bool left_flag=true; // !!
+    bool right_flag=true;
+
+    double distance;
+    double marg;
+
+    double turn_speed = 45; // speed when turning
+    double normal_speed = 45; // speed when driving
+
+    /*
+      0 : non-sign
+          (carcontroller)
+      1 : waiting for speed down
+          (calc_speed)  (set countdown = 2 )
+                        (set left_flag and right_flag)
+      2 : turning and countdown
+          (calc_angle) (check countdown <= 0)
+                      (mode = 2)
+                      (set left_flag = true , right_flag= true)
+
+    */
+    double turn_state=0;
+
+    /*
+      true: ready to turn (left or right)
+      false: waiting for current speed slow down below the "turn_speed"
+    */
+    int countdown;
+    int MAX_COUNTDOWN = 70;
+
+    vector<double>RANGE_COUNTDOWN_ANGLE {{-20,20}}; // if angle is between -30,30, countdown --
+    vector<double>RANGE_ANGLE {{-50,50}}; // range of valid angle value
+    double calc_angle(vector<Point2f> &center_windows,
+                    vector<Point2f> &left_pts,
+                  vector<Point2f> &right_pts,
+                Mat &gray);
+    double calc_speed(vector<Point2f> &center_windows,
+                    vector<Point2f> &left_pts,
+                  vector<Point2f> &right_pts);
 
 private:
 

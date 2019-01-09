@@ -5,12 +5,13 @@
 
 #include <ros/ros.h>
 #include <image_transport/image_transport.h>
+#include "std_msgs/Float32.h"
 #include <cv_bridge/cv_bridge.h>
 
 #include <ctime>
 #include <boost/timer.hpp>
 
-#include <ros/package.h> 
+#include <ros/package.h>
 
 #include "helperfunctions.h"
 #include "carcontroller.h"
@@ -74,11 +75,12 @@ void image_callback(const sensor_msgs::ImageConstPtr& msg)
 
         out = cv_bridge::toCvShare(msg, "bgr8")->image;
         // writer << out ;
-        imshow("View", out);
-        waitKey(1);
+        // imshow("View", out);
+        // waitKey(1);
 
         // put img for carcontroller
         carcontroller->main_processing(cv_ptr->image);
+        waitKey(1);
     }
     catch (cv_bridge::Exception& e)
     {
@@ -87,13 +89,20 @@ void image_callback(const sensor_msgs::ImageConstPtr& msg)
     }
 }
 
+void speed_callback(const std_msgs::Float32::ConstPtr& msg)
+{
+    // double data = msg->data;
+    //if(CHECK_CON)
+    // cout << "[INFO] Receive speed " << msg->data << "\n";
+    carcontroller->lane_detector->cur_speed = msg->data;
+}
 
 /* MAIN */
 int main(int argc, char **argv)
 {
     // Initialize and Activate
     ros::init(argc, argv, "image_listener");
-    cv::namedWindow("View");
+    cv::namedWindow("Sliding Window");
     cv::startWindowThread();
 
     // CarController is the main processing including
@@ -114,7 +123,9 @@ int main(int argc, char **argv)
 
     ros::NodeHandle nh;
     image_transport::ImageTransport it(nh);
-    image_transport::Subscriber sub = it.subscribe(team_name + "_image", 1, image_callback);
+    image_transport::Subscriber imagesub = it.subscribe(team_name + "_image", 1, image_callback);
+
+    ros::Subscriber speedsub = nh.subscribe("get_speed", 1, speed_callback);
 
     // Single-threaded Spinning
     ros::spin();

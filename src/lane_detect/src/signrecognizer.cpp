@@ -1,9 +1,9 @@
 #include "signrecognizer.h"
 
-SignRecognizer::SignRecognizer()
+SignRecognizer::SignRecognizer(string filepath)
 {
     // if using Haar Cascade Detection
-    bool ret = sign_cascade.load("/home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/cascade/right.xml");
+    bool ret = sign_cascade.load(filepath);
     if (!ret){
       // std::cout << "[ERROR] Reading cascade file Failed ! Make sure the path exists \n";
     }
@@ -15,12 +15,11 @@ SignRecognizer::~SignRecognizer()
 
 }
 
-void SignRecognizer::detect(const Mat &img)
+int SignRecognizer::detect(const Mat &img, const Mat &gray_img)
 {
     // Rect(x,y,width,height)
     Rect haft_top(0,0,img.size().width,(int)img.size().height/2);
-    Mat gray;
-    cvtColor(img(haft_top), gray, COLOR_RGB2GRAY);
+    Mat gray(gray_img);
 
     Rect s;
     Mat tmp_region_of_sign;
@@ -35,14 +34,24 @@ void SignRecognizer::detect(const Mat &img)
     if (is_detected){
         tmp_region_of_sign = img(s);
         cv::resize(tmp_region_of_sign, region_of_sign,Size(20,20),0,0, cv::INTER_LINEAR );
-        string rs = svmprocess->predict(region_of_sign);
-        cout << "[DEBUG] Detected Sign : " << rs << "\n";
+        int rs = svmprocess->predict(region_of_sign);
+        // cout << "[DEBUG] Detected region ! : " << rs << "\n";
         // region_of_sign = tmp_region_of_sign;
         // img_with_signs(Rect(0,0,region_of_sign.size().width,region_of_sign.size().height)) = region_of_sign;
+        if(rs == 0) {freq_left++;freq_right--;} // left
+        else if(rs == 1){freq_left--;freq_right++;} // right
+        // else {freq_left--;freq_right--;}
+        if((freq_left>=threshold_freq) || (freq_right>=threshold_freq))
+            return rs;
+    } else {
+        if (freq_left > 0) freq_left--;
+        if (freq_right > 0) freq_right--;
     }
 
-    cv::imshow("Sign Detection", img_with_signs);
-    // cv::waitKey();
+    return 2; // non-sign
+
+    // cv::imshow("Sign Detection", img_with_signs);
+
 }
 
 bool SignRecognizer::haarcascade_detect(const Mat &img,

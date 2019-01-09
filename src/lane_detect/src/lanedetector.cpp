@@ -11,22 +11,27 @@ LaneDetector::LaneDetector() {
     // cvCreateTrackbar("HighV", "Threshold", &maxThreshold[2], 255);
     //
     // cvCreateTrackbar("Shadow Param", "Threshold", &shadowParam, 255);
+    video = new VideoWriter("/home/non/Documents/Video/bi.avi",CV_FOURCC('M','J','P','G'),10, Size(w,h));
+    video2 = new VideoWriter("/home/non/Documents/Video/direction.avi",CV_FOURCC('M','J','P','G'),10, Size(w,h));
 }
 
 LaneDetector::~LaneDetector(){
-
+    video->release();
+    video2->release();
 }
 
-void LaneDetector::detect(const Mat &img, double &angle, double &speed)
+void LaneDetector::detect(const Mat &img, const Mat &gray_img,
+                          double &angle, double &speed)
 {
     // STAGE 2
     // gradient threshold
 
+    // cout << "[DEBUG] mode = " << mode << " , ready = " << ready << ", countdown = " << countdown << ", speed = " << cur_speed << "\n";
+
     reduced = true;
 
-    Mat gray;
-    // cvtColor(img, gray, cv::CV_RGB2GRAY);
-    cvtColor(img, gray, COLOR_RGB2GRAY);
+    Mat gray(gray_img);
+    // cvtColor(, gray, COLOR_RGB2GRAY);
 
     Mat bi_grad = apply_gradient_threshold(gray);
 
@@ -47,14 +52,17 @@ void LaneDetector::detect(const Mat &img, double &angle, double &speed)
 
     reduced = false;
     vector<Point2f> center_windows;
-    bool ret = slide_window(binary_warped, histogram, center_windows);
+    vector<Point2f> left_pts;
+    vector<Point2f> right_pts;
+    bool ret = slide_window(binary_warped, histogram, center_windows, left_pts, right_pts);
+
     if (ret)
     {
-        angle = calc_angle(center_windows);
-        // cout << "[] angle = " << angle << "\n";
-        speed = 50.0;
+        angle = calc_angle(center_windows,left_pts,right_pts,gray);
+        speed = calc_speed(center_windows,left_pts,right_pts);
     }else{
-        // std::cout << "[INFO] Cannot find lane ! \n";
+        cout << "[INFO] Cannot find lane ! \n";
+        // waitKey();
     }
 }
 
@@ -98,7 +106,7 @@ Mat LaneDetector::warp(const Mat &img)
         dst[i] = this->dst.at(i);
     }
     Mat M = getPerspectiveTransform(src, dst);
-    Mat warped_img(img.size().height, img.size().width, CV_8UC3);
+    Mat warped_img(img.rows, img.cols, CV_8UC3);
     warpPerspective(img, warped_img, M, warped_img.size(), INTER_LINEAR, BORDER_CONSTANT);
 
     if(!reduced){
@@ -218,8 +226,8 @@ Mat LaneDetector::dir_thresh(const Mat &gray)
     Mat abs_sobelx = cv::abs(sobelx);
     Mat abs_sobely = cv::abs(sobely);
 
-    int height = sobelx.size().height;
-    int width = sobelx.size().width;
+    int height = sobelx.rows;
+    int width = sobelx.cols;
 
     Mat grad_dir = Mat::zeros(height,width, CV_64F);
     // arctan(y/x)
@@ -300,9 +308,10 @@ Mat LaneDetector::combine_threshold(const Mat &s_binary,
 // =================== STAGE 3  ============================//
 Mat LaneDetector::get_histogram(const Mat &binary_warped)
 {
-    int width = binary_warped.size().width;
-    int height = binary_warped.size().height;
+    int width = binary_warped.cols;
+    int height = binary_warped.rows;
     Mat haft_bottom = binary_warped(Range(round(height/2), height), Range(0,width)); // row range, col range
+    // plot_binary_img("haft_bottom", haft_bottom);
     Mat histogram = sum(haft_bottom,'x');
 
     if (!reduced)
@@ -318,13 +327,15 @@ Mat LaneDetector::get_histogram(const Mat &binary_warped)
 
 bool LaneDetector::slide_window(const Mat &binary_warped,
                               const Mat &histogram,
-                              vector<Point2f> &center_windows)
+                              vector<Point2f> &center_windows,
+                              vector<Point2f> &left_pts,
+                            vector<Point2f> &right_pts)
 {
 
     Mat hist = histogram.t(); // transpose
 
-    int width = binary_warped.size().width;
-    int height = binary_warped.size().height;
+    int width = binary_warped.cols;
+    int height = binary_warped.rows;
 
     Mat nonzero = findNonzero(binary_warped);
 
@@ -332,12 +343,18 @@ bool LaneDetector::slide_window(const Mat &binary_warped,
     Mat out_img = dstack(binary_warped);
 
     // midpoint using multiple iterations T = (T1 + T2) / 2
-    // int midpoint = round(hist.size().width/2);
-    int midpoint = find_midpoint(hist,5); // hist, min, max, eps
-    // cout << "[INFO] midpoint = " << midpoint << "\n";
-    if(midpoint == -1){
-      return false ;
+    // int midpoint = round(hist.cols/2);
+    int midpoint;
+    if (turn_state != 2)// state 0,1
+    {
+        midpoint = find_midpoint(hist,5); // hist, min, max, eps
+        if(midpoint == -1){
+            midpoint = round(hist.cols/2);
+        }
+    }else{ // state 2 : turing
+        midpoint = round(hist.cols/2);
     }
+    // cout << "[INFO] midpoint = " << midpoint << "\n";
 
     // left boundary to the middle
     int leftx_current = arg_max(hist(Range(0, 1), Range(0,midpoint))).x; // row range, col range
@@ -345,18 +362,16 @@ bool LaneDetector::slide_window(const Mat &binary_warped,
     // right boundary to the middle
     int rightx_current = arg_max(hist(Range(0, 1), Range(midpoint,width))).x + midpoint; // row range, col range
 
-    // window height = height / nwindows
-    int window_height = round(height/nwindows);
-
-    for(int window = 0; window < nwindows; window++)
+    // #strwin
+    for(int window = bwindow-1; window < ewindow; window++)
     {
         int win_y_low;
+        int win_y_high = height - (window) * stridepix;
         if (window != nwindows - 1){
-            win_y_low = height - (window+1) * window_height;
+            win_y_low = win_y_high - window_height;
         }else{
             win_y_low = 0;
         }
-        int win_y_high = height - (window) * window_height;
 
         int win_xleft_low = leftx_current - margin;
         int win_xleft_high = leftx_current + margin;
@@ -366,10 +381,14 @@ bool LaneDetector::slide_window(const Mat &binary_warped,
 
         if (!reduced)
         {
-            cv::rectangle(out_img, Point(win_xleft_low,win_y_low),
-                          Point(win_xleft_high,win_y_high), Scalar(0,255,0), 2); // img, firstpoint, secondpoint, color, thickness
-            cv::rectangle(out_img, Point(win_xright_low,win_y_low),
-                          Point(win_xright_high,win_y_high), Scalar(0,255,0), 2);
+            if (left_flag){
+                cv::rectangle(out_img, Point(win_xleft_low,win_y_low),
+                Point(win_xleft_high,win_y_high), Scalar(0,255,0), 2); // img, firstpoint, secondpoint, color,
+            }
+            if (right_flag){
+                cv::rectangle(out_img, Point(win_xright_low,win_y_low),
+                Point(win_xright_high,win_y_high), Scalar(0,255,0), 2);
+            }
         }
 
         vector<int> leftxs; // which is inside the boxes
@@ -378,50 +397,68 @@ bool LaneDetector::slide_window(const Mat &binary_warped,
         vector<int> rightys;
 
         // maintain only points which are inside this box
-        for (int i = 0; i < nonzero.size().width ; i++)
+        for (int i = 0; i < nonzero.cols ; i++)
         {
             Point p = nonzero.at<Point>(0,i);
-            if (is_inside_box(win_y_low, win_y_high,win_xleft_low, win_xleft_high, p))
+            if (left_flag)
             {
-                leftxs.push_back(p.x);
-                leftys.push_back(p.y);
-            }else if (is_inside_box(win_y_low, win_y_high,win_xright_low, win_xright_high, p))
+                if (is_inside_box(win_y_low, win_y_high,win_xleft_low, win_xleft_high, p))
+                {
+                    leftxs.push_back(p.x);
+                    leftys.push_back(p.y);
+                }
+            }
+            if (right_flag)
             {
-                rightxs.push_back(p.x);
-                rightys.push_back(p.y);
+                if (is_inside_box(win_y_low, win_y_high,win_xright_low, win_xright_high, p))
+                {
+                    rightxs.push_back(p.x);
+                    rightys.push_back(p.y);
+                }
             }
         }
 
-        if (leftxs.size() > minpix)
+        int num_lefts = leftxs.size();
+        int num_rights = rightxs.size();
+
+        double left_x, left_y, right_x, right_y;
+        if  (num_lefts > minpix)
         {
-            leftx_current = round(cv::mean(leftxs)[0]);
+            left_x = cv::mean(leftxs)[0];
+            left_y = cv::mean(leftys)[0];
+            leftx_current = round(left_x);
+        }else{
+            left_x = leftx_current;
+            left_y = (float)(win_y_low - win_y_high)/2 + win_y_high;
         }
 
-        if (rightxs.size() > minpix)
+        if (num_rights > minpix)
         {
-            rightx_current = round(cv::mean(rightxs)[0]);
+            right_x = cv::mean(rightxs)[0];
+            right_y = cv::mean(rightys)[0];
+            rightx_current = round(right_x);
+        }else{
+            right_x = rightx_current;
+            right_y = (float)(win_y_low - win_y_high)/2 + win_y_high;
         }
 
         double center_x, center_y;
-        if ((leftxs.size() > minpix) && (rightxs.size() > minpix)){
-            center_x = (cv::mean(leftxs)[0] + cv::mean(rightxs)[0])/2;
-            center_y = (cv::mean(leftys)[0] + cv::mean(rightys)[0])/2;
+        if ((num_lefts > minpix) && (num_rights > minpix)){
+            center_x = (left_x + right_x)/2;
+            center_y = (left_y + right_y)/2;
         } else
         {
             center_x = (rightx_current - leftx_current)/2 + leftx_current;
             center_y = (float)(win_y_low - win_y_high)/2 + win_y_high;
         }
         center_windows.push_back(Point2f(center_x,center_y));
-
-        // windowtest
-        // window = 4 OKKK
-        if (window==ewindow-1){
-            break;
-        }
+        left_pts.push_back(Point2f(left_x,left_y));
+        right_pts.push_back(Point2f(right_x,right_y));
     }
 
     if(!reduced){
-        imshow("Stage 3 - Sliding Window", out_img);
+        imshow("Sliding Window", out_img);
+        video->write(out_img);
         // waitKey(1);
     }
 
@@ -430,7 +467,7 @@ bool LaneDetector::slide_window(const Mat &binary_warped,
 
 int LaneDetector::find_midpoint(const Mat &hist, float eps)
 {
-    int w = hist.size().width;
+    int w = hist.cols;
 
     int x_min, x_max;
 
@@ -442,6 +479,7 @@ int LaneDetector::find_midpoint(const Mat &hist, float eps)
         }
     }
     if (i == w-1){
+        cout << "[ERROR] find x_min \n";
         return -1;
     }else{
         x_min = i;
@@ -454,9 +492,15 @@ int LaneDetector::find_midpoint(const Mat &hist, float eps)
         }
     }
     if(i==0){
+        cout << "[ERROR] find x_max \n";
         return -1;
     }else{
         x_max = i;
+    }
+
+    if(x_min > x_max){
+        cout << "[ERROR] x min > x max \n";
+        return -1;
     }
 
     float T = x_min + (float)(x_max-x_min)/2;
@@ -484,7 +528,7 @@ double LaneDetector::calc_mean(const Mat &hist, int x_min, int x_max)
         s += i * (int)hist.at<uchar>(0,i);
     }
     if (count == 0){
-      // cout << "[DEBUG] count = 0 !!" << " min = " << x_min << " max = " << x_max << "\n";
+      cout << "[DEBUG] count = 0 !!" << " min = " << x_min << " max = " << x_max << "\n";
       return -1;
     }else{
       return s/count;
@@ -493,27 +537,124 @@ double LaneDetector::calc_mean(const Mat &hist, int x_min, int x_max)
 
 // ==========================STAGE 4 ===============================
 
-double LaneDetector::calc_angle(vector<Point2f> center_windows)
+double LaneDetector::calc_angle(vector<Point2f> &center_windows,
+                                vector<Point2f> &left_pts,
+                                vector<Point2f> &right_pts,
+                                Mat &gray)
 {
+    int ind = ewindow-bwindow;
+
     // upper
-    double x1 = center_windows[ewindow-1].x;
-    double y1 = center_windows[ewindow-1].y;
-
+    double x1, y1;
     // lower
-    double x2 = (double)w/2;
-    double y2 = (double)h;
+    double x2, y2;
+    double angle;
 
+    // state 0 (normal) , state 1 (braking)
+    if(turn_state != 2)
+    {
+        x1 = center_windows[ind].x;
+        y1 = center_windows[ind].y;
+        x2 = (double)w/2;
+        y2 = (double)h;
+        angle = -atan((x2-x1)/(y2-y1))/M_PI * 180;
+    }else {
+        // state 2 : turning
+        if(mode == 0) // turn left
+        {
+            x1 = left_pts[ind].x;
+            y1 = left_pts[ind].y;
+            x2 = left_pts[0].x;
+            y2 = left_pts[0].y;
+        }
+        else // turn right
+        {
+            // int ind = floor((sign_ewindow-sign_bwindow)/2);
+            ind = 1;
+            double rx = right_pts[ind].x;
+            x1 = (2*rx - ((w-rx)/marg)*((w-rx)/marg)*distance)/2;
+            // x1 = (right_pts[ind].x*2-distance)/2;
+            y1 = right_pts[ind].y;
+            x2 = (double)w/2;
+            y2 = (double)h;
+        }
+        angle = -atan((x2-x1)/(y2-y1))/M_PI * 180;
+        // countdown
+        if((angle < RANGE_COUNTDOWN_ANGLE[1]) &&
+           (angle > RANGE_COUNTDOWN_ANGLE[0]))
+        {
+            countdown--;
+            if(countdown <= 0) {
+              turn_state=0; // non-sign
+              mode = 2; // non-sign
+              left_flag = true;
+              right_flag = true;
+
+              nwindows = non_nwindows;
+              stridepix = non_stridepix;
+              bwindow = non_bwindow;
+              ewindow = non_ewindow;
+            }
+        }
+    }
     // y = a x + b
     // x1    1    y1
     // x2    1    y2
-
     // (x2-x1) a = y2-y1
     // a = (y2-y1)/(x2-x1)
-    return -atan((x2-x1)/(y2-y1))/M_PI * 180;
+
+    line(gray,Point2f(x1,y1),Point2f(x2,y2),Scalar(0,255,0),5);
+    imshow("Direction", gray);
+
+    Mat tmp;
+    cvtColor(gray,tmp,COLOR_GRAY2BGR);
+    video2->write(tmp);
+
+    // adjust angle in range RANGE_ANGLE
+    if(angle < RANGE_ANGLE[0]) {angle = RANGE_ANGLE[0];}
+    if(angle > RANGE_ANGLE[1]) {angle = RANGE_ANGLE[1];}
+    return angle;
 }
 
+double LaneDetector::calc_speed(vector<Point2f> &center_windows,
+                vector<Point2f> &left_pts,
+              vector<Point2f> &right_pts)
+{
+    // state 1: normal speed 60
+    if(turn_state==0) return normal_speed;
 
+    // state 2: braking , speed 0
+    if(turn_state==1){
+        // waiting for speed down
+        if (cur_speed < turn_speed+2)// 2 is the acceptable error
+        {
+            // move the turn state 2
+            turn_state = 2;
+            countdown = MAX_COUNTDOWN;
+            if(mode==0) right_flag = false;
+            if(mode==1) left_flag = false;
+            cout << "[INFO] Switch to state 2: turning \n";
 
+            // int ind = floor((non_ewindow-non_bwindow)/2);
+            int ind = 1;
+            // int ind = ewindow-bwindow;
+            distance = right_pts[ind].x-left_pts[ind].x;
+            if(mode==1) marg = w - right_pts[ind].x;
+            if(mode==0) marg = left_pts[ind].x;
+
+            nwindows = sign_nwindows;
+            stridepix = sign_stridepix;
+            bwindow = sign_bwindow;
+            ewindow = sign_ewindow;
+        }
+        return 0.0;
+    }
+
+    // state 3: turing, speed 40
+    if(turn_state==2) return turn_speed;
+
+    return normal_speed;
+}
 
 // =================== HELPER FUNCTIONS ============================//
 double LaneDetector::find_max(Mat img)
@@ -553,8 +694,8 @@ Point LaneDetector::arg_max(Mat img)
 
 Mat LaneDetector::sum(Mat mat, char axis)
 {
-    int width = mat.size().width;
-    int height = mat.size().height;
+    int width = mat.cols;
+    int height = mat.rows;
     Mat result ;
     Mat tmp;
     mat.convertTo(tmp, CV_64F);
@@ -594,7 +735,7 @@ Mat LaneDetector::plot_histogram(Mat hist)
     hist.convertTo(hist, CV_64F, 1.0);
 
     // Establish the number of bins
-    int histSize = hist.size().height;
+    int histSize = hist.rows;
 
     // show_img_description("hist", hist);
 
@@ -629,8 +770,8 @@ Mat LaneDetector::plot_histogram(Mat hist)
 
 Mat LaneDetector::dstack(const Mat &img)
 {
-    int height = img.size().height;
-    int width = img.size().width;
+    int height = img.rows;
+    int width = img.cols;
 
     Mat tmp;
     img.convertTo(tmp, CV_64F);
@@ -660,8 +801,8 @@ Mat LaneDetector::dstack(const Mat &img)
 
 Mat LaneDetector::findNonzero(Mat img)
 {
-    int height = img.size().height;
-    int width = img.size().width;
+    int height = img.rows;
+    int width = img.cols;
 
     img.convertTo(img, CV_64F);
     vector<Point> nonzero_pts ;
@@ -676,7 +817,7 @@ Mat LaneDetector::findNonzero(Mat img)
     }
 
     Mat rs(1,nonzero_pts.size(), CV_64F);
-    for (int x = 0 ; x < rs.size().width; x++)
+    for (int x = 0 ; x < rs.cols; x++)
     {
         rs.at<Point>(0,x) = nonzero_pts[x];
     }
@@ -867,7 +1008,7 @@ bool LaneDetector::is_inside_box(int win_y_low, int win_y_high,
 
 Mat LaneDetector::drawPolylines(Mat &img, vector<Point> pts)
 {
-    int height = img.size().height;
+    int height = img.rows;
     int sz = pts.size();
     Point ps[1][sz];
     for(int i = 0; i < sz; i++)
@@ -887,7 +1028,7 @@ vector<Point> LaneDetector::polyval(Mat &img, vector<double> coefs)
 
     int sz = coefs.size();
 
-    int height = img.size().height;
+    int height = img.rows;
     vector<Point> rs;
     for (int i = 0 ; i < height; i++)
     {
@@ -904,7 +1045,7 @@ vector<Point> LaneDetector::polyval(Mat &img, vector<double> coefs)
             double a = coefs[2];
             double b = coefs[1];
             double c = coefs[0];
-            double h = img.size().height;
+            double h = img.rows;
             x = (2*a*h + b)*y - a*h*h + c ;
             rs.push_back(Point(round(x),round(y)));
 
@@ -922,7 +1063,7 @@ vector<Point> LaneDetector::polyval(Mat &img, vector<double> coefs, bool is_pol)
 
     int sz = coefs.size();
 
-    int height = img.size().height;
+    int height = img.rows;
     vector<Point> rs;
     for (int i = 0 ; i < height; i++)
     {
@@ -1010,7 +1151,7 @@ void LaneDetector::show_img_description(string name, const Mat &img)
 {
     Mat tmp(img);
     cout <<"\n" << img << "\n";
-    cout << " [INFO] width = " << img.size().width << ", height = "<< img.size().height << "\n";
+    cout << " [INFO] width = " << img.cols << ", height = "<< img.rows << "\n";
     show_mat_type(name, tmp);
     show_min_max(name, tmp);
     cout << "\n" ;
@@ -1047,6 +1188,8 @@ void LaneDetector::videoProcess(string video_path)
     VideoCapture video(video_path);
 
     Mat img;
+    Mat gray;
+    cvtColor(img, gray,COLOR_RGB2GRAY);
     double angle=0, speed=-1;
     int iframe = 0;
 
@@ -1059,302 +1202,9 @@ void LaneDetector::videoProcess(string video_path)
         }
         imshow("View", img);
         waitKey(10);
-        this->detect(img, angle, speed);
+        this->detect(img, gray,angle, speed);
         std::cout << " [INFO] angle = " << angle << ", speed =" << speed << "\n";
 
         iframe++;
     }
 }
-
-// int min(int a, int b)
-// {
-//     return a < b ? a : b;
-// }
-//
-// Point LaneDetector::null = Point();
-//
-//
-//
-//
-// // check later , alternative way is STAGE2
-// Mat LaneDetector::preProcess(const Mat &src)
-// {
-//
-//     Mat imgThresholded, imgHSV, warped_img;
-//
-//     // hue, saturation , value
-//     cvtColor(src, imgHSV, COLOR_BGR2HSV);
-//
-//     // HSV threshold
-//     inRange(imgHSV, Scalar(minThreshold[0], minThreshold[1], minThreshold[2]),
-//         Scalar(maxThreshold[0], maxThreshold[1], maxThreshold[2]),
-//         imgThresholded);
-//     cv::imshow("Image after thresholding ... ", imgThresholded);
-//     waitKey(0);
-//
-//     warped_img = warp(imgThresholded);
-//
-//     if (this->is_test){
-//         imshow("Stage 2 - Image after converting to Hue,Saturation,Value", imgHSV);
-//         imshow("Stage 2 - Thresholding colorHSV", imgThresholded);
-//         imshow("Stage 2 - Binary warped image", warped_img);
-//         waitKey(0);
-//     }
-//
-//     fillLane(warped_img);
-//
-//     if (this->is_test){
-//         imshow("Stage 2 - After filling lane ", warped_img);
-//         waitKey(0);
-//     }
-//
-//     return warped_img;
-// }
-//
-//
-//
-// Mat LaneDetector::laneInShadow(const Mat &src)
-// {
-//     Mat shadowMask, shadow, imgHSV, shadowHSV, laneShadow;
-//     cvtColor(src, imgHSV, COLOR_BGR2HSV);
-//
-//     inRange(imgHSV, Scalar(minShadowTh[0], minShadowTh[1], minShadowTh[2]),
-//     Scalar(maxShadowTh[0], maxShadowTh[1], maxShadowTh[2]),
-//     shadowMask);
-//
-//     src.copyTo(shadow, shadowMask);
-//
-//     cvtColor(shadow, shadowHSV, COLOR_BGR2HSV);
-//
-//     inRange(shadowHSV, Scalar(minLaneInShadow[0], minLaneInShadow[1], minLaneInShadow[2]),
-//         Scalar(maxLaneInShadow[0], maxLaneInShadow[1], maxLaneInShadow[2]),
-//         laneShadow);
-//
-//     return laneShadow;
-// }
-//
-// void LaneDetector::fillLane(Mat &src)
-// {
-//     vector<Vec4i> lines;
-//     HoughLinesP(src, lines, 1, CV_PI/180, 1);
-//     for( size_t i = 0; i < lines.size(); i++ )
-//     {
-//         Vec4i l = lines[i];
-//         line(src, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(255), 3, CV_AA);
-//     }
-// }
-//
-// vector<Mat> LaneDetector::splitLayer(const Mat &src, int dir)
-// {
-//     int rowN = src.rows;
-//     int colN = src.cols;
-//     std::vector<Mat> res;
-//
-//     if (dir == VERTICAL)
-//     {
-//         for (int i = 0; i < rowN - slideThickness; i += slideThickness) {
-//             Mat tmp;
-//             Rect crop(0, i, colN, slideThickness);
-//             tmp = src(crop);
-//             res.push_back(tmp);
-//         }
-//     }
-//     else
-//     {
-//         for (int i = 0; i < colN - slideThickness; i += slideThickness) {
-//             Mat tmp;
-//             Rect crop(i, 0, slideThickness, rowN);
-//             tmp = src(crop);
-//             res.push_back(tmp);
-//         }
-//     }
-//
-//     return res;
-// }
-//
-// vector<vector<Point> > LaneDetector::centerRoadSide(const vector<Mat> &src, int dir)
-// {
-//     vector<std::vector<Point> > res;
-//     int inputN = src.size();
-//     for (int i = 0; i < inputN; i++) {
-//         std::vector<std::vector<Point> > cnts;
-//         std::vector<Point> tmp;
-//         findContours(src[i], cnts, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-//         int cntsN = cnts.size();
-//         if (cntsN == 0) {
-//             res.push_back(tmp);
-//             continue;
-//         }
-//
-//         for (int j = 0; j < cntsN; j++) {
-//             int area = contourArea(cnts[j], false);
-//             if (area > 3) {
-//                 Moments M1 = moments(cnts[j], false);
-//                 Point2f center1 = Point2f(static_cast<float> (M1.m10 / M1.m00), static_cast<float> (M1.m01 / M1.m00));
-//                 if (dir == VERTICAL) {
-//                     center1.y = center1.y + slideThickness*i;
-//                 }
-//                 else
-//                 {
-//                     center1.x = center1.x + slideThickness*i;
-//                 }
-//                 if (center1.x > 0 && center1.y > 0) {
-//                     tmp.push_back(center1);
-//                 }
-//             }
-//         }
-//         res.push_back(tmp);
-//     }
-//
-//     return res;
-// }
-//
-// void LaneDetector::detectLeftRight(const vector<vector<Point> > &points)
-// {
-//     static vector<Point> lane1, lane2;
-//     lane1.clear();
-//     lane2.clear();
-//
-//     leftLane.clear();
-//     rightLane.clear();
-//     for (int i = 0; i < BIRDVIEW_HEIGHT / slideThickness; i ++)
-//     {
-//         leftLane.push_back(null);
-//         rightLane.push_back(null);
-//     }
-//
-//     int pointMap[points.size()][20];
-//     int prePoint[points.size()][20];
-//     int postPoint[points.size()][20];
-//     int dis = 10;
-//     int max = -1, max2 = -1;
-//     Point2i posMax, posMax2;
-//
-//     memset(pointMap, 0, sizeof pointMap);
-//
-//     for (int i = 0; i < points.size(); i++)
-//     {
-//         for (int j = 0; j < points[i].size(); j++)
-//         {
-//             pointMap[i][j] = 1;
-//             prePoint[i][j] = -1;
-//             postPoint[i][j] = -1;
-//         }
-//     }
-//
-//     for (int i = points.size() - 2; i >= 0; i--)
-//     {
-//         for (int j = 0; j < points[i].size(); j++)
-//         {
-//             int err = 320;
-//             for (int m = 1; m < min(points.size() - 1 - i, 5); m++)
-//             {
-//                 bool check = false;
-//                 for (int k = 0; k < points[i + 1].size(); k ++)
-//                 {
-//                     if (abs(points[i + m][k].x - points[i][j].x) < dis &&
-//                     abs(points[i + m][k].x - points[i][j].x) < err) {
-//                         err = abs(points[i + m][k].x - points[i][j].x);
-//                         pointMap[i][j] = pointMap[i + m][k] + 1;
-//                         prePoint[i][j] = k;
-//                         postPoint[i + m][k] = j;
-//                         check = true;
-//                     }
-//                 }
-//                 break;
-//             }
-//
-//             if (pointMap[i][j] > max)
-//             {
-//                 max = pointMap[i][j];
-//                 posMax = Point2i(i, j);
-//             }
-//         }
-//     }
-//
-//     for (int i = 0; i < points.size(); i++)
-//     {
-//         for (int j = 0; j < points[i].size(); j++)
-//         {
-//             if (pointMap[i][j] > max2 && (i != posMax.x || j != posMax.y) && postPoint[i][j] == -1)
-//             {
-//                 max2 = pointMap[i][j];
-//                 posMax2 = Point2i(i, j);
-//             }
-//         }
-//     }
-//
-//     if (max == -1) return;
-//
-//     while (max >= 1)
-//     {
-//         lane1.push_back(points[posMax.x][posMax.y]);
-//         if (max == 1) break;
-//
-//         posMax.y = prePoint[posMax.x][posMax.y];
-//         posMax.x += 1;
-//
-//         max--;
-//     }
-//
-//     while (max2 >= 1)
-//     {
-//         lane2.push_back(points[posMax2.x][posMax2.y]);
-//         if (max2 == 1) break;
-//
-//         posMax2.y = prePoint[posMax2.x][posMax2.y];
-//         posMax2.x += 1;
-//
-//         max2--;
-//     }
-//
-//     vector<Point> subLane1(lane1.begin(), lane1.begin() + 5);
-//     vector<Point> subLane2(lane2.begin(), lane2.begin() + 5);
-//
-//     Vec4f line1, line2;
-//
-//     fitLine(subLane1, line1, 2, 0, 0.01, 0.01);
-//     fitLine(subLane2, line2, 2, 0, 0.01, 0.01);
-//
-//     int lane1X = (BIRDVIEW_WIDTH - line1[3]) * line1[0] / line1[1] + line1[2];
-//     int lane2X = (BIRDVIEW_WIDTH - line2[3]) * line2[0] / line2[1] + line2[2];
-//
-//     if (lane1X < lane2X)
-//     {
-//         for (int i = 0; i < lane1.size(); i++)
-//         {
-//             leftLane[floor(lane1[i].y / slideThickness)] = lane1[i];
-//         }
-//         for (int i = 0; i < lane2.size(); i++)
-//         {
-//             rightLane[floor(lane2[i].y / slideThickness)] = lane2[i];
-//         }
-//     }
-//     else
-//     {
-//         for (int i = 0; i < lane2.size(); i++)
-//         {
-//             leftLane[floor(lane2[i].y / slideThickness)] = lane2[i];
-//         }
-//         for (int i = 0; i < lane1.size(); i++)
-//         {
-//             rightLane[floor(lane1[i].y / slideThickness)] = lane1[i];
-//         }
-//     }
-// }
-//
-//
-// Mat LaneDetector::morphological(const Mat &img)
-// {
-//     Mat dst;
-//
-//     // erode(img, dst, getStructuringElement(MORPH_ELLIPSE, Size(1, 1)) );
-//     // dilate( dst, dst, getStructuringElement(MORPH_ELLIPSE, Size(1, 1)) );
-//
-//     dilate(img, dst, getStructuringElement(MORPH_ELLIPSE, Size(10, 20)) );
-//     erode(dst, dst, getStructuringElement(MORPH_ELLIPSE, Size(10, 20)) );
-//
-//     // blur(dst, dst, Size(3, 3));
-//
-//     return dst;
-// }

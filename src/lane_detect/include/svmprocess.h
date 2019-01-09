@@ -29,6 +29,7 @@ public:
     Mat *X;
     Mat *y;
 
+    int nlabels; // = 3
     vector<string> desc_labels {{"left-sign","right-sign","non-sign"}};
 
     void get_train_data(Size winSize);
@@ -37,7 +38,7 @@ public:
     void train(const Mat &X, const Mat &y);
     void train();
 
-    string predict(const Mat &gray);
+    int predict(const Mat &gray);
     void save_model(string path);
     void load_model(string path);
 

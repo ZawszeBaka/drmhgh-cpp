@@ -23,6 +23,8 @@ SVMProcess::SVMProcess()
     int nbins = 9;
     hog = new HOGDescriptor(winSize, blockSize, blockStride, cellSize, nbins);
 
+    nlabels = desc_labels.size();
+
 }
 
 SVMProcess::~SVMProcess()
@@ -40,13 +42,13 @@ Mat SVMProcess::extract_HOG(const Mat &gray)
     return p;
 }
 
-string SVMProcess::predict(const Mat &gray)
+int SVMProcess::predict(const Mat &gray)
 {
     Mat hog_gray = extract_HOG(gray);
     float val = svm->predict(hog_gray);
-    if ((val < desc_labels.size()) && (val >= 0))
+    if ((val < nlabels) && (val >= 0))
     {
-        return desc_labels[(int)val];
+        return (int)val;
     }
-    return "non-sign";
+    return nlabels-1; // non-sign
 }

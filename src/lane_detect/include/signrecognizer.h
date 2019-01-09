@@ -17,12 +17,16 @@ using namespace cv;
 class SignRecognizer
 {
 public:
-    SignRecognizer();
+    SignRecognizer(string filepath);
     ~SignRecognizer();
 
     SVMProcess *svmprocess;
 
-    void detect(const Mat &gray);
+    int detect(const Mat &img, const Mat &gray_img);
+
+    int freq_left = 0;
+    int freq_right = 0;
+    int threshold_freq = 5;
 
     // if using haar cascade detection
     CascadeClassifier sign_cascade;

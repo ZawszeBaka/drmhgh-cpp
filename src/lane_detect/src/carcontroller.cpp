@@ -8,7 +8,9 @@ CarController::CarController(string team_name)
     speed_publisher = node_obj2.advertise<std_msgs::Float32>(team_name+"_speed",10);
 
     lane_detector = new LaneDetector();
-    sign_recognizer = new SignRecognizer();
+    left_sign_recognizer = new SignRecognizer("/home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/cascade/left.xml");
+    right_sign_recognizer = new SignRecognizer("/home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/cascade/right.xml");
+    left_sign_recognizer->threshold_freq = 3;
 
     w = lane_detector->w;
     h = lane_detector->h;
@@ -40,13 +42,10 @@ CarController::CarController(string team_name)
     // lane_detector->color_thresh_high = {255,255,255};
 
     // STAGE 3 :
-    lane_detector->margin =40;
-    lane_detector->minpix = 20;
-    lane_detector->nwindows = 9;
-    lane_detector->ewindow = 4;
-
-    // STAGE 3:
-
+    lane_detector->nwindows = lane_detector->non_nwindows;
+    lane_detector->stridepix = lane_detector->non_stridepix;
+    lane_detector->bwindow = lane_detector->non_bwindow;
+    lane_detector->ewindow = lane_detector->non_ewindow;
 
 
 }
@@ -83,8 +82,24 @@ void CarController::main_processing(const Mat &img)
     */
     double angle;
     double speed;
-    lane_detector->detect(img, angle, speed);
-    sign_recognizer->detect(img);
+
+    Mat gray;
+    cvtColor(img, gray, COLOR_RGB2GRAY);
+
+    // lane detection
+    lane_detector->detect(img, gray, angle, speed);
+
+    // sign recognition : move to the turn state 1
+    if(lane_detector->turn_state == 0){ // non-sign
+        // sign = left_sign_recognizer->detect(img,gray);
+        sign = right_sign_recognizer->detect(img,gray);
+        if (sign!=2){
+            cout << "[DEBUG] Change mode " << sign << "\n";
+            lane_detector->mode = sign;
+            lane_detector->turn_state = 1;
+        }
+    }
+
     driverCar(angle, speed);
     // cv::waitKey(1);
 }

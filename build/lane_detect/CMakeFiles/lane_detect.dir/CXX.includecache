@@ -87,6 +87,8 @@ ros/ros.h
 -
 image_transport/image_transport.h
 -
+std_msgs/Float32.h
+/home/non/Documents/ROS/drmhgh-cpp/src/lane_detect/src/std_msgs/Float32.h
 cv_bridge/cv_bridge.h
 -
 ctime

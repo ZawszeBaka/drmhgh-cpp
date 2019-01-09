@@ -27,12 +27,16 @@ public:
     string team_name;
 
     LaneDetector *lane_detector;
-    SignRecognizer *sign_recognizer;
+    SignRecognizer *left_sign_recognizer;
+    SignRecognizer *right_sign_recognizer;
 
     // fix size of input image
     int w;
     int h;
 
+    int sign;
+
+    double cur_speed; // current speed of the car 
 
     void driverCar(float _angle, float velocity);
 
