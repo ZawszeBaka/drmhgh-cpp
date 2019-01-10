@@ -42,7 +42,7 @@ CarController::CarController(string team_name)
     // lane_detector->color_thresh_high = {255,255,255};
 
     // STAGE 3 :
-    lane_detector->nwindows = lane_detector->non_nwindows;
+    // lane_detector->nwindows = lane_detector->non_nwindows;
     lane_detector->stridepix = lane_detector->non_stridepix;
     lane_detector->bwindow = lane_detector->non_bwindow;
     lane_detector->ewindow = lane_detector->non_ewindow;
@@ -91,12 +91,14 @@ void CarController::main_processing(const Mat &img)
 
     // sign recognition : move to the turn state 1
     if(lane_detector->turn_state == 0){ // non-sign
-        // sign = left_sign_recognizer->detect(img,gray);
-        sign = right_sign_recognizer->detect(img,gray);
+        sign = left_sign_recognizer->detect(img,gray);
         if (sign!=2){
-            cout << "[DEBUG] Change mode " << sign << "\n";
-            lane_detector->mode = sign;
-            lane_detector->turn_state = 1;
+            lane_detector->switchto1(sign);
+        }else{  
+          sign = right_sign_recognizer->detect(img,gray);
+          if (sign!=2){
+            lane_detector->switchto1(sign);
+          }
         }
     }
 

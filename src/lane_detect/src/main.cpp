@@ -102,7 +102,7 @@ int main(int argc, char **argv)
 {
     // Initialize and Activate
     ros::init(argc, argv, "image_listener");
-    cv::namedWindow("Sliding Window");
+    cv::namedWindow("RS");
     cv::startWindowThread();
 
     // CarController is the main processing including

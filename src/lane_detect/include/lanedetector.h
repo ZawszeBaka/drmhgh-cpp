@@ -61,7 +61,7 @@ public:
 
     // warping
     Mat addPoints(const Mat &img, array<Point2f,4> pts);
-    Mat addPoints(const Mat &img, vector<int> x, vector<int> y);
+    Mat addPoints(const Mat &img, Point2f &p);
     Mat warp(const Mat &source);
 
     // =============== STAGE 2 ===================
@@ -100,6 +100,7 @@ public:
 
     // ============== STAGE 3 ==================
     Mat get_histogram(const Mat &binary_warped);
+    Mat get_histogram_v1(const Mat &binary_warped);
 
     // slide windows
     int margin = 40 ; // => window_width = 60
@@ -112,7 +113,7 @@ public:
     int ewindow;
 
     // Mode "non-sign"
-    int non_nwindows = 15; // ewindow must be smaller than nwindows
+    // int non_nwindows = 15; // ewindow must be smaller than nwindows
     int non_stridepix = 15;
     int non_bwindow = 4;
     int non_ewindow = 6; //
@@ -122,18 +123,32 @@ public:
     // int sign_stridepix = 5;
     // int sign_bwindow = 10;
     // int sign_ewindow = 16;
-    int sign_nwindows = 15; // ewindow must be smaller than nwindows
+    // int sign_nwindows = 15; // ewindow must be smaller than nwindows
     int sign_stridepix = 15;
     int sign_bwindow = 4;
     int sign_ewindow = 6;
 
+    // Mode "horizontal"
+    // int h_nwindows = 15; // ewindow must be smaller than nwindows
+    int h_stridepix = 15;
+    int h_bwindow = 1;
+    int h_ewindow = 4;
+
     // return false if cannot detect lane
     bool slide_window(const Mat &binary_warped,
-                      const Mat &histogram,
-                      vector<Point2f> &center_windows,
+                      const Mat &v_histogram,
+                      vector<Point2f> &v_center_windows,
                     vector<Point2f> &left_pts,
-                  vector<Point2f> &right_pts);
+                  vector<Point2f> &right_pts,
+                Mat &outimg);
+    bool slide_window_v1(const Mat &binary_warped,
+                      const Mat &h_histogram,
+                      vector<Point2f> &h_center_windows,
+                    vector<Point2f> &low_pts,
+                  vector<Point2f> &up_pts,
+                Mat &outimg);
     int find_midpoint(const Mat &hist, float eps);
+    int find_midpoint_v1(const Mat &hist, float eps);
     double calc_mean(const Mat &hist, int x_min, int x_max);
 
     // ============== STAGE 4 =================
@@ -149,8 +164,8 @@ public:
     double distance;
     double marg;
 
-    double turn_speed = 45; // speed when turning
-    double normal_speed = 45; // speed when driving
+    double turn_speed = 30; // speed when turning
+    double normal_speed = 50; // speed when driving
 
     /*
       0 : non-sign
@@ -166,22 +181,26 @@ public:
     */
     double turn_state=0;
 
-    /*
-      true: ready to turn (left or right)
-      false: waiting for current speed slow down below the "turn_speed"
-    */
-    int countdown;
-    int MAX_COUNTDOWN = 70;
-
+    vector<double>RANGE_ANGLE_SWITCH_TURN {{-40,40}}; // -40,40
     vector<double>RANGE_COUNTDOWN_ANGLE {{-20,20}}; // if angle is between -30,30, countdown --
     vector<double>RANGE_ANGLE {{-50,50}}; // range of valid angle value
     double calc_angle(vector<Point2f> &center_windows,
                     vector<Point2f> &left_pts,
                   vector<Point2f> &right_pts,
-                Mat &gray);
+                Mat &out_img);
+    double calc_angle_c(vector<Point2f> &center_windows,
+                Mat &out_img);
     double calc_speed(vector<Point2f> &center_windows,
                     vector<Point2f> &left_pts,
                   vector<Point2f> &right_pts);
+
+    void switchto0();
+    void switchto1(int sign);
+    void switchto2();
+    int countdown;
+    int MAX_COUNTDOWN = 15;
+
+    double angle_c;
 
 private:
 
