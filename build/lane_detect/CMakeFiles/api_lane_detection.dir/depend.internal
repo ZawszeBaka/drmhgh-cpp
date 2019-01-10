@@ -178,6 +178,12 @@ lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o
  /usr/local/include/opencv2/stitching/warpers.hpp
  /usr/local/include/opencv2/superres.hpp
  /usr/local/include/opencv2/superres/optical_flow.hpp
+ /usr/local/include/opencv2/tracking.hpp
+ /usr/local/include/opencv2/tracking/feature.hpp
+ /usr/local/include/opencv2/tracking/onlineBoosting.hpp
+ /usr/local/include/opencv2/tracking/onlineMIL.hpp
+ /usr/local/include/opencv2/tracking/tldDataset.hpp
+ /usr/local/include/opencv2/tracking/tracker.hpp
  /usr/local/include/opencv2/video.hpp
  /usr/local/include/opencv2/video/background_segm.hpp
  /usr/local/include/opencv2/video/tracking.hpp
@@ -378,6 +384,12 @@ lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o
  /usr/local/include/opencv2/stitching/warpers.hpp
  /usr/local/include/opencv2/superres.hpp
  /usr/local/include/opencv2/superres/optical_flow.hpp
+ /usr/local/include/opencv2/tracking.hpp
+ /usr/local/include/opencv2/tracking/feature.hpp
+ /usr/local/include/opencv2/tracking/onlineBoosting.hpp
+ /usr/local/include/opencv2/tracking/onlineMIL.hpp
+ /usr/local/include/opencv2/tracking/tldDataset.hpp
+ /usr/local/include/opencv2/tracking/tracker.hpp
  /usr/local/include/opencv2/video.hpp
  /usr/local/include/opencv2/video/background_segm.hpp
  /usr/local/include/opencv2/video/tracking.hpp

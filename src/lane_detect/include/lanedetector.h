@@ -1,8 +1,10 @@
 #ifndef DETECTLANE_H
 #define DETECTLANE_H
 
+#include <opencv2/core/utility.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/tracking.hpp>
 // #include <opencv2/opencv.hpp>
 
 #include <ros/ros.h>
@@ -36,6 +38,23 @@ public:
 
     VideoWriter *video;
     VideoWriter *video2;
+
+    Ptr<Tracker> tracker_up;
+    Ptr<Tracker> tracker_low;
+    // bool isfirstframe = true;
+    Rect2d up_track_win;
+    Rect2d low_track_win;
+    void init_tracker(const Mat &binary_warped,
+                      Rect2d &up, // update up_track_win
+                      Rect2d &low); // update low_track_win
+    void tracking(const Mat &binary_warped, // input
+                  Point2f &center_pts, // return
+                  Mat &out_img); // update
+    void find_center_pts(const Mat &binary_warped, // input
+                         Point2f &center_pts, // return
+                         Rect2d &up, // update
+                         Rect2d &low, // update
+                         Mat &out_img); // update
 
     //
     bool reduced = true;
@@ -147,6 +166,11 @@ public:
                     vector<Point2f> &low_pts,
                   vector<Point2f> &up_pts,
                 Mat &outimg);
+    bool slide_window_v1(const Mat &binary_warped,
+                        const Mat &h_histogram,
+                        Rect2d &up,
+                        Rect2d &low,
+                        Mat &outimg);
     int find_midpoint(const Mat &hist, float eps);
     int find_midpoint_v1(const Mat &hist, float eps);
     double calc_mean(const Mat &hist, int x_min, int x_max);
@@ -177,30 +201,34 @@ public:
           (calc_angle) (check countdown <= 0)
                       (mode = 2)
                       (set left_flag = true , right_flag= true)
-
     */
-    double turn_state=0;
+    int turn_state=0;
+    void switchto0();
+    void switchto1(int sign);
+    void switchto2();
+    void switchto3();
+    int countdown;
+    int MAX_COUNTDOWN = 20;
 
-    vector<double>RANGE_ANGLE_SWITCH_TURN {{-40,40}}; // -40,40
-    vector<double>RANGE_COUNTDOWN_ANGLE {{-20,20}}; // if angle is between -30,30, countdown --
+    double angle_c, angle_s;
+
+    vector<double>RANGE_ANGLE_SWITCH_TURN {{-35,35}}; // -40,40
+    vector<double>RANGE_COUNTDOWN_ANGLE {{-5,5}}; // 15,15 if angle is between -30,30, countdown --
     vector<double>RANGE_ANGLE {{-50,50}}; // range of valid angle value
     double calc_angle(vector<Point2f> &center_windows,
                     vector<Point2f> &left_pts,
                   vector<Point2f> &right_pts,
                 Mat &out_img);
-    double calc_angle_c(vector<Point2f> &center_windows,
+    // calculate only 1 center pts
+    double calc_angle(Point2f &center_pts, Mat &out_img);
+    // calculate from multiple center windows
+    double calc_angle(vector<Point2f> &center_windows,
                 Mat &out_img);
     double calc_speed(vector<Point2f> &center_windows,
                     vector<Point2f> &left_pts,
                   vector<Point2f> &right_pts);
 
-    void switchto0();
-    void switchto1(int sign);
-    void switchto2();
-    int countdown;
-    int MAX_COUNTDOWN = 15;
 
-    double angle_c;
 
 private:
 

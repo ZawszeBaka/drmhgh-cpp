@@ -69,7 +69,6 @@ bool SignRecognizer::haarcascade_detect(const Mat &img,
     */
     // Mat tmp;
     // resize(gray,tmp,Size(60,60));
-    imshow("test signs", gray);
     sign_cascade.detectMultiScale(gray, signs, 1.1, 3, INTER_LINEAR, Size(20,20), gray.size());
 
     int num_detected_signs = (int) signs.size();

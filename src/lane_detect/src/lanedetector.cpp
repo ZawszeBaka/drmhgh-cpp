@@ -13,6 +13,10 @@ LaneDetector::LaneDetector() {
     // cvCreateTrackbar("Shadow Param", "Threshold", &shadowParam, 255);
     video = new VideoWriter("/home/non/Documents/Video/bi.avi",CV_FOURCC('M','J','P','G'),10, Size(w,h));
     video2 = new VideoWriter("/home/non/Documents/Video/direction.avi",CV_FOURCC('M','J','P','G'),10, Size(w,h));
+
+    tracker_up = TrackerKCF::create();
+    tracker_low = TrackerKCF::create();
+
 }
 
 LaneDetector::~LaneDetector(){
@@ -44,8 +48,9 @@ void LaneDetector::detect(const Mat &img, const Mat &gray_img,
     // warping
     Mat binary_warped = warp(combined_binary);
 
+    // convert 2-D binary image into 2-D colored image (3channels)
+    Mat out_img = dstack(binary_warped);
 
-    Mat out_img;
     vector<Point2f> v_center_windows,h_center_windows;
     vector<Point2f> left_pts;
     vector<Point2f> right_pts;
@@ -53,40 +58,61 @@ void LaneDetector::detect(const Mat &img, const Mat &gray_img,
     vector<Point2f> low_pts;
     bool ret;
 
-    // STAGE 3
+    // STAGE 3: ::detect
     Mat h_histogram, v_histogram ;
     if(turn_state == 0){
         v_histogram = get_histogram(binary_warped);
         reduced = false;
-        ret = slide_window(binary_warped, v_histogram, v_center_windows,
+        ret = slide_window(binary_warped, v_histogram,
+                           v_center_windows,
                            left_pts, right_pts, out_img);
-        angle = calc_angle(v_center_windows,left_pts,right_pts,out_img);
-    }else if (turn_state == 1){
+        angle = calc_angle(v_center_windows,left_pts,
+                           right_pts,out_img);
+    }
+    else if (turn_state == 1){
         v_histogram = get_histogram(binary_warped);
         h_histogram = get_histogram_v1(binary_warped);
         reduced = false;
-        ret = slide_window(binary_warped, v_histogram, v_center_windows,
+        ret = slide_window(binary_warped, v_histogram,
+                           v_center_windows,
                            left_pts, right_pts, out_img);
-        ret = slide_window_v1(binary_warped, h_histogram, h_center_windows,
+        ret = slide_window_v1(binary_warped, h_histogram,
+                            h_center_windows,
                            low_pts, up_pts, out_img);
         angle = calc_angle(v_center_windows,left_pts,right_pts,out_img);
-        double angle_c = calc_angle_c(h_center_windows,out_img);
+        double angle_c = calc_angle(h_center_windows,out_img);
         if((angle_c > RANGE_ANGLE_SWITCH_TURN[1]) || (angle_c < RANGE_ANGLE_SWITCH_TURN[0]))
         {
             this->angle_c = angle_c;
+            this->angle_s = angle;
             switchto2();
         }
-    }else{
-        v_histogram = get_histogram(binary_warped);
+    }
+    else if(turn_state == 2) {
+
+        reduced = true;
+        h_histogram = get_histogram_v1(binary_warped);
         reduced = false;
-        ret = slide_window(binary_warped, v_histogram, v_center_windows,
-                           left_pts, right_pts, out_img);
-        angle = this->angle_c;
-        double angle_c = calc_angle(v_center_windows,left_pts,right_pts,out_img);
-        // if((angle_c < RANGE_COUNTDOWN_ANGLE[1]) || (angle_c > RANGE_COUNTDOWN_ANGLE[0]))
-        if((right_pts[ewindow-bwindow].x-left_pts[ewindow-bwindow].x)>100)
+        Rect2d up, low;
+        // find upper, lower  windows
+        ret = slide_window_v1(binary_warped, h_histogram,
+                              up, low, out_img);
+
+        if(abs(low.y-up.y) > 20){
+            // init tracker
+            init_tracker(img, up, low);
+
+            switchto3();
+        }
+        angle = angle_s;
+    }
+    else{
+        Point2f center_pts;
+        tracking(binary_warped,center_pts, out_img);
+        angle = calc_angle(center_pts,out_img);
+        if((angle < RANGE_COUNTDOWN_ANGLE[1]) && (angle > RANGE_COUNTDOWN_ANGLE[0]))
         {
-            cout << "[INFO] Countdown ! \n";
+            cout << "[INFO] Countdown ! Angle = " << angle << "\n";
             countdown--;
             if (countdown<=0) switchto0();
         }
@@ -403,9 +429,6 @@ bool LaneDetector::slide_window(const Mat &binary_warped,
 
     Mat nonzero = findNonzero(binary_warped);
 
-    // convert 2-D binary image into 2-D colored image (3channels)
-    out_img = dstack(binary_warped);
-
     // midpoint using multiple iterations T = (T1 + T2) / 2
     // int midpoint = round(hist.cols/2);
     int midpoint;
@@ -420,8 +443,6 @@ bool LaneDetector::slide_window(const Mat &binary_warped,
     }
 
     cv::rectangle(out_img, Point(midpoint-1,height-2), Point(midpoint+1,height-1),cv::Scalar(0,255,0),5);
-
-    // cout << "[INFO] midpoint = " << midpoint << "\n";
 
     // left boundary to the middle
     int leftx_current = arg_max(hist(Range(0, 1), Range(0,midpoint))).x; // row range, col range
@@ -504,6 +525,7 @@ bool LaneDetector::slide_window(const Mat &binary_warped,
             right_y = (float)(win_y_low - win_y_high)/2 + win_y_high;
         }
 
+
         double center_x, center_y;
         if ((num_lefts > minpix) && (num_rights > minpix)){
             center_x = (left_x + right_x)/2;
@@ -511,8 +533,9 @@ bool LaneDetector::slide_window(const Mat &binary_warped,
         } else
         {
             center_x = (rightx_current - leftx_current)/2 + leftx_current;
-            center_y = (float)(win_y_low - win_y_high)/2 + win_y_high;
+            center_y = (double)(win_y_high - win_y_low)/2 + win_y_low;
         }
+
         center_windows.push_back(Point2f(center_x,center_y));
         left_pts.push_back(Point2f(left_x,left_y));
         right_pts.push_back(Point2f(right_x,right_y));
@@ -650,6 +673,151 @@ bool LaneDetector::slide_window_v1(const Mat &binary_warped,
 
     return true;
 }
+
+bool LaneDetector::slide_window_v1(const Mat &binary_warped,
+                              const Mat &histogram,
+                              Rect2d &up,
+                              Rect2d &low,
+                          Mat &out_img)
+{
+
+    Mat hist = histogram.t(); // transpose
+
+    int width = binary_warped.cols;
+    int height = binary_warped.rows;
+
+    Mat nonzero = findNonzero(binary_warped);
+
+    // midpoint using multiple iterations T = (T1 + T2) / 2
+    int midpoint;
+    if (turn_state != 2)// state 0,1
+    {
+        midpoint = find_midpoint_v1(hist,5); // hist, eps
+        if(midpoint == -1){
+            midpoint = round(hist.cols/2);
+        }
+    }else{ // state 2 : turing
+        midpoint = round(hist.cols/2);
+    }
+
+    // left boundary to the middle
+    int upy_current = arg_max(hist(Range(0, 1), Range(0,midpoint))).x; // row range, col range
+
+    // right boundary to the middle
+    int lowy_current = arg_max(hist(Range(0, 1), Range(midpoint,height))).x + midpoint; // row range, col range
+
+    // int margin = 40 ; // => window_width = 60
+    // int window_height = 40;
+    // int minpix = 20 ;
+
+    int stridepix = 15;
+    int bwindow = 1;
+    int ewindow = 6;
+
+    // #strwin
+    for(int window = bwindow-1; window < ewindow; window++)
+    {
+        int win_x_low, win_x_high;
+        if(mode == 0) // sliding window from the left
+        {
+            win_x_low = h_stridepix * window;
+            win_x_high = win_x_low + window_height;
+        }else{
+            win_x_high = width - h_stridepix*window;
+            win_x_low = win_x_high - window_height;
+        }
+
+        // upper
+        int win_yleft_low = upy_current - margin;
+        int win_yleft_high = upy_current + margin;
+
+        // lower
+        int win_yright_low = lowy_current - margin;
+        int win_yright_high = lowy_current + margin;
+
+        if (!reduced)
+        {
+            cv::rectangle(out_img, Point(win_x_low,win_yleft_low),
+            Point(win_x_high,win_yleft_high), Scalar(0,255,0), 2); // img, firstpoint, secondpoint, color,
+            cv::rectangle(out_img, Point(win_x_low,win_yright_low),
+            Point(win_x_high,win_yright_high), Scalar(0,255,0), 2);
+        }
+
+        vector<int> upxs; // which is inside the boxes
+        vector<int> upys;
+        vector<int> lowxs;
+        vector<int> lowys;
+
+        // maintain only points which are inside this box
+        for (int i = 0; i < nonzero.cols ; i++)
+        {
+            Point p = nonzero.at<Point>(0,i);
+            if (is_inside_box(win_yleft_low,win_yleft_high,win_x_low, win_x_high,p))
+            {
+                upxs.push_back(p.x);
+                upys.push_back(p.y);
+            }
+
+            if (is_inside_box(win_yright_low, win_yright_high,win_x_low, win_x_high, p))
+            {
+                lowxs.push_back(p.x);
+                lowys.push_back(p.y);
+            }
+        }
+
+        int num_ups = upxs.size();
+        int num_lows = lowxs.size();
+
+        double up_x, up_y, low_x, low_y;
+        if  (num_ups > minpix)
+        {
+            up_x = cv::mean(upxs)[0];
+            up_y = cv::mean(upys)[0];
+            upy_current = round(up_y);
+        }else{
+            up_y = upy_current;
+            up_x = (double)(win_x_high - win_x_low)/2 + win_x_low;
+        }
+
+        if (num_lows > minpix)
+        {
+            low_x = cv::mean(lowxs)[0];
+            low_y = cv::mean(lowys)[0];
+            lowy_current = round(low_y);
+        }else{
+            low_y = lowy_current;
+            low_x = (double)(win_x_high - win_x_low)/2 + win_x_low;
+        }
+
+        double center_x, center_y;
+        if ((num_ups > minpix) && (num_lows > minpix)){
+            center_x = (up_x + low_x)/2;
+            center_y = (up_y + low_y)/2;
+        } else
+        {
+            center_y = (upy_current - lowy_current)/2 + lowy_current;
+            center_x = (double)(win_x_high - win_x_low)/2 + win_x_low;
+        }
+
+        if(window == ewindow-1)
+        {
+            //Point(win_x_low,win_yleft_low),
+            // Point(win_x_high,win_yleft_high)
+            // x , y , w, h
+            up = Rect2d(win_x_low,win_yleft_low,win_x_high-win_x_low,
+                        win_yleft_high-win_yleft_low);
+
+            // Point(win_x_low,win_yright_low),
+            // Point(win_x_high,win_yright_high)
+            // x , y, w , h
+            low = Rect2d(win_x_low,win_yright_low,win_x_high-win_x_low,
+                         win_yright_high-win_yright_low);
+        }
+    }
+
+    return true;
+}
+
 
 int LaneDetector::find_midpoint(const Mat &hist, float eps)
 {
@@ -854,7 +1022,24 @@ double LaneDetector::calc_angle(vector<Point2f> &center_windows,
     return angle;
 }
 
-double LaneDetector::calc_angle_c(vector<Point2f> &center_windows,
+double LaneDetector::calc_angle(Point2f &center_pts, Mat &out_img)
+{
+    double x1 = center_pts.x;
+    double y1 = center_pts.y;
+    double x2 = (double)w/2;
+    double y2 = (double)h;
+
+    double angle = -atan((x2-x1)/(y2-y1))/M_PI * 180;
+
+    line(out_img,Point2f(x1,y1),Point2f(x2,y2),Scalar(0,255,0),5);
+
+    // adjust angle in range RANGE_ANGLE
+    if(angle < RANGE_ANGLE[0]) {angle = RANGE_ANGLE[0];}
+    if(angle > RANGE_ANGLE[1]) {angle = RANGE_ANGLE[1];}
+    return angle;
+}
+
+double LaneDetector::calc_angle(vector<Point2f> &center_windows,
                 Mat &out_img)
 {
     int ind = 3;
@@ -883,6 +1068,7 @@ void LaneDetector::switchto0()
     turn_state=0; // non-sign
     mode = 2; // non-sign
     cout << "[INFO] Normal State (0) \n";
+    // isfirstframe=true;
     // left_flag = true;
     // right_flag = true;
     //
@@ -901,7 +1087,7 @@ void LaneDetector::switchto1(int sign)
 
 void LaneDetector::switchto2()
 {
-    cout << "[INFO] Turning State (2) \n";
+    // cout << "[INFO] Hidden state (2) \n";
     turn_state = 2;
     countdown = MAX_COUNTDOWN;
 
@@ -916,6 +1102,101 @@ void LaneDetector::switchto2()
     // stridepix = sign_stridepix;
     // bwindow = sign_bwindow;
     // ewindow = sign_ewindow;
+}
+
+void LaneDetector::switchto3()
+{
+    cout << "[INFO] Turning State (3) \n";
+    turn_state = 3;
+    countdown = MAX_COUNTDOWN;
+}
+
+void LaneDetector::init_tracker(const Mat &binary_warped,
+                                Rect2d &up,
+                                Rect2d &low)
+{
+    up_track_win = up;
+    low_track_win = low;
+    if(up.width == 0 || up.height == 0) cout << "[error] \n";
+    if(low.width == 0 || low.height == 0) cout << "[error] \n";
+}
+
+void LaneDetector::tracking(const Mat &binary_warped,
+                            Point2f &center_pts,
+                            Mat &out_img)
+{
+    find_center_pts(binary_warped, center_pts,
+                    up_track_win,
+                    low_track_win,
+                    out_img);
+}
+
+void LaneDetector::find_center_pts(const Mat &binary_warped,
+                     Point2f &center_pts,
+                     Rect2d &up,
+                     Rect2d &low,
+                     Mat &out_img)
+{
+    Mat nonzero = findNonzero(binary_warped);
+
+    vector<int> upxs; // which is inside the boxes
+    vector<int> upys;
+    vector<int> lowxs;
+    vector<int> lowys;
+
+    // maintain only points which are inside this box
+    for (int i = 0; i < nonzero.cols ; i++)
+    {
+        Point p = nonzero.at<Point>(0,i);
+        if (is_inside_box(up.y,up.y+up.height,up.x,up.x+up.width,p))
+        {
+            upxs.push_back(p.x);
+            upys.push_back(p.y);
+        }
+
+        if (is_inside_box(low.y,low.y+low.height,low.x,low.x+low.width, p))
+        {
+            lowxs.push_back(p.x);
+            lowys.push_back(p.y);
+        }
+
+    }
+
+    int num_ups = upxs.size();
+    int num_lows = lowxs.size();
+
+    double up_x, up_y, low_x, low_y;
+
+    // upper
+    if  (num_ups > minpix)
+    {
+        up_x = cv::mean(upxs)[0];
+        up_y = cv::mean(upys)[0];
+    }else{
+        up_x = up.x + up.width/2;
+        up_y = up.y + up.height/2;
+    }
+
+    // lower
+    if (num_lows > minpix)
+    {
+        low_x = cv::mean(lowxs)[0];
+        low_y = cv::mean(lowys)[0];
+    }else{
+        low_x = low.x + low.width/2;
+        low_y = low.y + low.height/2;
+    }
+
+    center_pts = Point2f((up_x+low_x)/2,(up_y+low_y)/2);
+
+    // update window
+    up.x = up_x - up.width/2;
+    up.y = up_y - up.height/2;
+    low.x = low_x - low.width/2;
+    low.y = low_y - low.height/2;
+
+    rectangle(out_img,up,Scalar(0,255,0),4);
+    rectangle(out_img,low,Scalar(0,255,0),4);
 }
 
 // =================== HELPER FUNCTIONS ============================//

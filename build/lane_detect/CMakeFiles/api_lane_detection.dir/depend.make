@@ -177,6 +177,12 @@ lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o: /usr/loca
 lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o: /usr/local/include/opencv2/stitching/warpers.hpp
 lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o: /usr/local/include/opencv2/superres.hpp
 lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o: /usr/local/include/opencv2/superres/optical_flow.hpp
+lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o: /usr/local/include/opencv2/tracking.hpp
+lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o: /usr/local/include/opencv2/tracking/feature.hpp
+lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o: /usr/local/include/opencv2/tracking/onlineBoosting.hpp
+lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o: /usr/local/include/opencv2/tracking/onlineMIL.hpp
+lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o: /usr/local/include/opencv2/tracking/tldDataset.hpp
+lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o: /usr/local/include/opencv2/tracking/tracker.hpp
 lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o: /usr/local/include/opencv2/video.hpp
 lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o: /usr/local/include/opencv2/video/background_segm.hpp
 lane_detect/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o: /usr/local/include/opencv2/video/tracking.hpp
@@ -377,6 +383,12 @@ lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o: /usr/local
 lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o: /usr/local/include/opencv2/stitching/warpers.hpp
 lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o: /usr/local/include/opencv2/superres.hpp
 lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o: /usr/local/include/opencv2/superres/optical_flow.hpp
+lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o: /usr/local/include/opencv2/tracking.hpp
+lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o: /usr/local/include/opencv2/tracking/feature.hpp
+lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o: /usr/local/include/opencv2/tracking/onlineBoosting.hpp
+lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o: /usr/local/include/opencv2/tracking/onlineMIL.hpp
+lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o: /usr/local/include/opencv2/tracking/tldDataset.hpp
+lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o: /usr/local/include/opencv2/tracking/tracker.hpp
 lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o: /usr/local/include/opencv2/video.hpp
 lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o: /usr/local/include/opencv2/video/background_segm.hpp
 lane_detect/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o: /usr/local/include/opencv2/video/tracking.hpp
