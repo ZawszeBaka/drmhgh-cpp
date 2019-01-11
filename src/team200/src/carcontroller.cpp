@@ -15,8 +15,6 @@ CarController::CarController(string team_name)
     right_sign_recognizer = new SignRecognizer(ros::package::getPath("team200") + "/cascade/right.xml");
     right_sign_recognizer->s = 1;
 
-    left_sign_recognizer->threshold_freq = 3;
-
     w = lane_detector->w;
     h = lane_detector->h;
 
@@ -94,20 +92,28 @@ void CarController::main_processing(const Mat &img)
     // lane detection
     lane_detector->detect(img, gray, angle, speed);
 
-    // sign recognition : move to the turn state 1
-    if(lane_detector->turn_state == 0){ // non-sign
-        sign = left_sign_recognizer->detect(img,gray);
-        if (sign!=2){
-            lane_detector->switchto1(sign);
-        }else{
-          sign = right_sign_recognizer->detect(img,gray);
+    t++; // make sure t is 0 and 1
+    t = t%2;
+    if(t==0){
+      // sign recognition : move to the turn state 1
+      left_sign_recognizer->iframe++;
+      right_sign_recognizer->iframe++;
+      if(lane_detector->turn_state == 0 ||
+         lane_detector->turn_state == 10){ // non-sign
+          sign = left_sign_recognizer->detect(img,gray);
           if (sign!=2){
-            lane_detector->switchto1(sign);
+              lane_detector->switchto1(sign);
+          }else{
+            sign = right_sign_recognizer->detect(img,gray);
+            if (sign!=2){
+              lane_detector->switchto1(sign);
+            }
           }
-        }
+      }
     }
 
+    // cout << "[] color high " << lane_detector->color_thresh_high[0] << "\n";
 
-    driverCar(angle, speed);
+    // driverCar(angle, speed);
     // cv::waitKey(1);
 }

@@ -7,4 +7,7 @@
 # new environment variables
 
 # modified environment variables
+export CMAKE_PREFIX_PATH="/home/non/Documents/ROS/drmhgh-cpp/devel:$CMAKE_PREFIX_PATH"
 export PWD="/home/non/Documents/ROS/drmhgh-cpp/build"
+export ROSLISP_PACKAGE_DIRECTORIES="/home/non/Documents/ROS/drmhgh-cpp/devel/share/common-lisp"
+export ROS_PACKAGE_PATH="/home/non/Documents/ROS/drmhgh-cpp/src:$ROS_PACKAGE_PATH"

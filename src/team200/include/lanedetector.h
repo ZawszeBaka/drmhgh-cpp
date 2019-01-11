@@ -4,7 +4,7 @@
 #include <opencv2/core/utility.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/tracking.hpp>
+// #include <opencv2/tracking.hpp>
 // #include <opencv2/opencv.hpp>
 
 #include <ros/ros.h>
@@ -19,6 +19,8 @@
 using namespace std;
 using namespace cv;
 
+#include "tracker.h"
+
 // catkin_make && roslaunch lane_detect lane_de
 
 class LaneDetector
@@ -27,8 +29,14 @@ public:
     LaneDetector();
     ~LaneDetector();
 
+    int iframe= 0;
 
     double cur_speed=0; // current speed of the car
+
+    // tracker
+    bool IS_TRACKING = false;
+    Tracker *h_tracker;
+    Tracker *v_tracker;
 
     /*
     Width and height of input image , which is fixed size !
@@ -38,23 +46,6 @@ public:
 
     VideoWriter *video;
     VideoWriter *video2;
-
-    Ptr<Tracker> tracker_up;
-    Ptr<Tracker> tracker_low;
-    // bool isfirstframe = true;
-    Rect2d up_track_win;
-    Rect2d low_track_win;
-    void init_tracker(const Mat &binary_warped,
-                      Rect2d &up, // update up_track_win
-                      Rect2d &low); // update low_track_win
-    void tracking(const Mat &binary_warped, // input
-                  Point2f &center_pts, // return
-                  Mat &out_img); // update
-    void find_center_pts(const Mat &binary_warped, // input
-                         Point2f &center_pts, // return
-                         Rect2d &up, // update
-                         Rect2d &low, // update
-                         Mat &out_img); // update
 
     //
     bool reduced = true;
@@ -96,6 +87,7 @@ public:
     Mat mag_thresh(const Mat &gray);
 
     // direction threshold
+    array<int,2> tmp_dir_thresh_range{{22,41}};
     array<float,2> dir_thresh_range {{0.7, 1.3}}; // {0, M_PI/2}
     Mat dir_thresh(const Mat &gray);
 
@@ -110,8 +102,8 @@ public:
     // apply color threshold
     float s_thresh_min = 0 ;
     float s_thresh_max = 1 ;
-    vector<int> color_thresh_low {{0,0,0}};
-    vector<int> color_thresh_high {{10,10,10}};
+    vector<int> color_thresh_low {102,63,63};
+    vector<int> color_thresh_high {255,170,170};
     Mat apply_color_threshold(const Mat &img);
 
     // combine both gradient threshold and color threshold with operator OR
@@ -183,7 +175,10 @@ public:
                         bool &left_status,
                         bool &right_status,
                         bool &mid_status,
+                        Rect2d &left_rect,
+                        Rect2d &right_rect,
                         Mat &out_img);
+    Rect2d calc_rect(vector<Point2f> v, int w, int h);
     int find_midpoint(const Mat &hist, float eps);
     int find_midpoint_v1(const Mat &hist, float eps);
     double calc_mean(const Mat &hist, int x_min, int x_max);
@@ -205,7 +200,7 @@ public:
     double marg;
 
     int turn_speed = 30; // speed when turning
-    int normal_speed = 50; // speed when driving
+    int normal_speed = 40; // speed when driving
 
     // just for trackbar
     static void change_turn_speed(int,void*);
@@ -224,15 +219,19 @@ public:
                       (set left_flag = true , right_flag= true)
     */
     int turn_state=0;
-    void switchto0();
+    void switchto0(bool);
     void switchto1(int sign);
     void switchto2();
     void switchto3();
+    void switchto10();
     int countdown;
     int MAX_COUNTDOWN = 20;
     int countdown_mistaken = 0;
     int MAX_COUNTDOWN_MISTAKEN = 80;
     void mistaken();
+    int tracking_countdown;
+    int MAX_TRACKING_COUNTDOWN = 6;
+    void keep_tracking();
 
     double angle_c, angle_s;
 

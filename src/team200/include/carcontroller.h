@@ -36,6 +36,8 @@ public:
     int w;
     int h;
 
+    int t=0;
+
     int sign;
 
     double cur_speed; // current speed of the car

@@ -33,6 +33,7 @@ add_library(api_lane_detection
   src/signrecognizer.cpp
   src/helperfunctions.cpp
   src/svmprocess.cpp
+  src/tracker.cpp
 )
 
 add_executable(team200 src/main.cpp)

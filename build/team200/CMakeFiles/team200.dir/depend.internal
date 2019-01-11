@@ -7,6 +7,7 @@ team200/CMakeFiles/team200.dir/src/main.cpp.o
  /home/non/Documents/ROS/drmhgh-cpp/src/team200/include/lanedetector.h
  /home/non/Documents/ROS/drmhgh-cpp/src/team200/include/signrecognizer.h
  /home/non/Documents/ROS/drmhgh-cpp/src/team200/include/svmprocess.h
+ /home/non/Documents/ROS/drmhgh-cpp/src/team200/include/tracker.h
  /home/non/Documents/ROS/drmhgh-cpp/src/team200/src/main.cpp
  /opt/ros/lunar/include/cv_bridge/cv_bridge.h
  /opt/ros/lunar/include/image_transport/camera_publisher.h
@@ -196,12 +197,6 @@ team200/CMakeFiles/team200.dir/src/main.cpp.o
  /usr/local/include/opencv2/stitching/warpers.hpp
  /usr/local/include/opencv2/superres.hpp
  /usr/local/include/opencv2/superres/optical_flow.hpp
- /usr/local/include/opencv2/tracking.hpp
- /usr/local/include/opencv2/tracking/feature.hpp
- /usr/local/include/opencv2/tracking/onlineBoosting.hpp
- /usr/local/include/opencv2/tracking/onlineMIL.hpp
- /usr/local/include/opencv2/tracking/tldDataset.hpp
- /usr/local/include/opencv2/tracking/tracker.hpp
  /usr/local/include/opencv2/video.hpp
  /usr/local/include/opencv2/video/background_segm.hpp
  /usr/local/include/opencv2/video/tracking.hpp

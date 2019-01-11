@@ -732,6 +732,33 @@ src/svmprocess.cpp.s:
 	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/svmprocess.cpp.s
 .PHONY : src/svmprocess.cpp.s
 
+src/tracker.o: src/tracker.cpp.o
+
+.PHONY : src/tracker.o
+
+# target to build an object file
+src/tracker.cpp.o:
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/tracker.cpp.o
+.PHONY : src/tracker.cpp.o
+
+src/tracker.i: src/tracker.cpp.i
+
+.PHONY : src/tracker.i
+
+# target to preprocess a source file
+src/tracker.cpp.i:
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/tracker.cpp.i
+.PHONY : src/tracker.cpp.i
+
+src/tracker.s: src/tracker.cpp.s
+
+.PHONY : src/tracker.s
+
+# target to generate assembly for a file
+src/tracker.cpp.s:
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/tracker.cpp.s
+.PHONY : src/tracker.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -790,6 +817,9 @@ help:
 	@echo "... src/svmprocess.o"
 	@echo "... src/svmprocess.i"
 	@echo "... src/svmprocess.s"
+	@echo "... src/tracker.o"
+	@echo "... src/tracker.i"
+	@echo "... src/tracker.s"
 .PHONY : help
 
 

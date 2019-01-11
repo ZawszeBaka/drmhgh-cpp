@@ -2,4 +2,4 @@
 source_root_dir = "/home/non/Documents/ROS/drmhgh-cpp/src"
 whitelisted_packages = "".split(';') if "" != "" else []
 blacklisted_packages = "".split(';') if "" != "" else []
-underlay_workspaces = "/home/non/Documents/ROS/drmhgh-cpp/devel;/opt/ros/lunar".split(';') if "/home/non/Documents/ROS/drmhgh-cpp/devel;/opt/ros/lunar" != "" else []
+underlay_workspaces = "/opt/ros/lunar".split(';') if "/opt/ros/lunar" != "" else []

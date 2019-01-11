@@ -6,6 +6,7 @@ team200/CMakeFiles/team200.dir/src/main.cpp.o: /home/non/Documents/ROS/drmhgh-cp
 team200/CMakeFiles/team200.dir/src/main.cpp.o: /home/non/Documents/ROS/drmhgh-cpp/src/team200/include/lanedetector.h
 team200/CMakeFiles/team200.dir/src/main.cpp.o: /home/non/Documents/ROS/drmhgh-cpp/src/team200/include/signrecognizer.h
 team200/CMakeFiles/team200.dir/src/main.cpp.o: /home/non/Documents/ROS/drmhgh-cpp/src/team200/include/svmprocess.h
+team200/CMakeFiles/team200.dir/src/main.cpp.o: /home/non/Documents/ROS/drmhgh-cpp/src/team200/include/tracker.h
 team200/CMakeFiles/team200.dir/src/main.cpp.o: /home/non/Documents/ROS/drmhgh-cpp/src/team200/src/main.cpp
 team200/CMakeFiles/team200.dir/src/main.cpp.o: /opt/ros/lunar/include/cv_bridge/cv_bridge.h
 team200/CMakeFiles/team200.dir/src/main.cpp.o: /opt/ros/lunar/include/image_transport/camera_publisher.h
@@ -195,12 +196,6 @@ team200/CMakeFiles/team200.dir/src/main.cpp.o: /usr/local/include/opencv2/stitch
 team200/CMakeFiles/team200.dir/src/main.cpp.o: /usr/local/include/opencv2/stitching/warpers.hpp
 team200/CMakeFiles/team200.dir/src/main.cpp.o: /usr/local/include/opencv2/superres.hpp
 team200/CMakeFiles/team200.dir/src/main.cpp.o: /usr/local/include/opencv2/superres/optical_flow.hpp
-team200/CMakeFiles/team200.dir/src/main.cpp.o: /usr/local/include/opencv2/tracking.hpp
-team200/CMakeFiles/team200.dir/src/main.cpp.o: /usr/local/include/opencv2/tracking/feature.hpp
-team200/CMakeFiles/team200.dir/src/main.cpp.o: /usr/local/include/opencv2/tracking/onlineBoosting.hpp
-team200/CMakeFiles/team200.dir/src/main.cpp.o: /usr/local/include/opencv2/tracking/onlineMIL.hpp
-team200/CMakeFiles/team200.dir/src/main.cpp.o: /usr/local/include/opencv2/tracking/tldDataset.hpp
-team200/CMakeFiles/team200.dir/src/main.cpp.o: /usr/local/include/opencv2/tracking/tracker.hpp
 team200/CMakeFiles/team200.dir/src/main.cpp.o: /usr/local/include/opencv2/video.hpp
 team200/CMakeFiles/team200.dir/src/main.cpp.o: /usr/local/include/opencv2/video/background_segm.hpp
 team200/CMakeFiles/team200.dir/src/main.cpp.o: /usr/local/include/opencv2/video/tracking.hpp

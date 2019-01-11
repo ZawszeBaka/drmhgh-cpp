@@ -38,19 +38,27 @@ int SignRecognizer::detect(const Mat &img, const Mat &gray_img)
         // cout << "[DEBUG] Detected region ! : " << rs << "\n";
         // region_of_sign = tmp_region_of_sign;
         // img_with_signs(Rect(0,0,region_of_sign.size().width,region_of_sign.size().height)) = region_of_sign;
-        if(rs == 0) {
-            cout << "[INFO] Detected left sign ! \n";
+        if(rs == 0 || this->s ==0) {
+            cout << "[INFO] Frame " << to_string(iframe) << " Detected left sign from " + to_string(this->s) + "\n" ;
             p_left.erase(p_left.begin());
             p_left.push_back(1);
             // freq_left++;
             // if(freq_right>0) freq_right--;
+            if(sum(p_left) > threshold_freq)
+            {
+                return this->s;
+            }
         } // left
-        else if(rs == 1){
-            cout << "[INFO] Detected right sign ! \n";
+        else if(rs == 1 || this->s == 1){
+            cout << "[INFO] Frame " << to_string(iframe) <<  " Detected right sign from "  + to_string(this->s) + "\n";
             p_right.erase(p_right.begin());
             p_right.push_back(1);
             // if(freq_left>0) freq_left--;
             // freq_right++;
+            if(sum(p_right) > threshold_freq)
+            {
+                return this->s;
+            }
         } // right
         // else {freq_left--;freq_right--;}
         // if((freq_left>=threshold_freq) || (freq_right>=threshold_freq)){
@@ -59,14 +67,8 @@ int SignRecognizer::detect(const Mat &img, const Mat &gray_img)
         //   return rs;
         // }
 
-        if(sum(p_left) > threshold_freq)
-        {
-            return rs;
-        }
-        if(sum(p_right) > threshold_freq)
-        {
-            return rs;
-        }
+
+
 
     } else {
         p_left.erase(p_left.begin());
@@ -75,7 +77,7 @@ int SignRecognizer::detect(const Mat &img, const Mat &gray_img)
         p_right.push_back(0);
     }
 
-    cv::imshow("Sign Detection", img_with_signs);
+    // cv::imshow("Sign Detection", img_with_signs);
 
     return 2; // non-sign
 }
@@ -95,7 +97,7 @@ bool SignRecognizer::haarcascade_detect(const Mat &img,
     */
     // Mat tmp;
     // resize(gray,tmp,Size(60,60));
-    sign_cascade.detectMultiScale(gray, signs, 1.1, 3, INTER_LINEAR, Size(30,30), gray.size());
+    sign_cascade.detectMultiScale(gray, signs, 1.1, 3, INTER_LINEAR, Size(20,20), gray.size());
 
     int num_detected_signs = (int) signs.size();
 
@@ -111,7 +113,7 @@ bool SignRecognizer::haarcascade_detect(const Mat &img,
             if (w*h > max_size){
                 s = signs[i];
             }
-            rectangle(img_with_signs, signs[i], Scalar(0,255,0));
+            rectangle(img_with_signs, signs[i], Scalar(0,255,0),5);
         }
         return true;
     }
