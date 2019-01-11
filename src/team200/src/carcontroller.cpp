@@ -8,8 +8,13 @@ CarController::CarController(string team_name)
     speed_publisher = node_obj2.advertise<std_msgs::Float32>(team_name+"_speed",10);
 
     lane_detector = new LaneDetector();
-    left_sign_recognizer = new SignRecognizer("/home/non/Documents/ROS/drmhgh-cpp/src/team200/cascade/left.xml");
-    right_sign_recognizer = new SignRecognizer("/home/non/Documents/ROS/drmhgh-cpp/src/team200/cascade/right.xml");
+    // left_sign_recognizer = new SignRecognizer("/home/non/Documents/ROS/drmhgh-cpp/src/team200/cascade/left.xml");
+    // right_sign_recognizer = new SignRecognizer("/home/non/Documents/ROS/drmhgh-cpp/src/team200/cascade/right.xml");
+    left_sign_recognizer = new SignRecognizer(ros::package::getPath("team200") + "/cascade/left.xml");
+    left_sign_recognizer->s = 0;
+    right_sign_recognizer = new SignRecognizer(ros::package::getPath("team200") + "/cascade/right.xml");
+    right_sign_recognizer->s = 1;
+
     left_sign_recognizer->threshold_freq = 3;
 
     w = lane_detector->w;

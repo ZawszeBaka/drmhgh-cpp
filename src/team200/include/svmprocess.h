@@ -26,6 +26,8 @@ public:
     Ptr<SVM> svm ;
     Ptr<HOGDescriptor> hog;
 
+    int s;
+
     Mat *X;
     Mat *y;
 

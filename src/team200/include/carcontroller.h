@@ -10,6 +10,8 @@
 #include <ros/ros.h>
 #include "std_msgs/Float32.h"
 
+#include <ros/package.h>
+
 #include <unistd.h>
 
 #include "lanedetector.h"
@@ -36,7 +38,7 @@ public:
 
     int sign;
 
-    double cur_speed; // current speed of the car 
+    double cur_speed; // current speed of the car
 
     void driverCar(float _angle, float velocity);
 

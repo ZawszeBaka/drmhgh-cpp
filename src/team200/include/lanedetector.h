@@ -160,6 +160,8 @@ public:
                     vector<Point2f> &left_pts,
                   vector<Point2f> &right_pts,
                 Mat &outimg);
+
+    // sliding horizontal windows
     bool slide_window_v1(const Mat &binary_warped,
                       const Mat &h_histogram,
                       vector<Point2f> &h_center_windows,
@@ -171,16 +173,23 @@ public:
                         Rect2d &up,
                         Rect2d &low,
                         Mat &outimg);
+    // sliding 3 lanes (vertical)
     bool slide_window_v3(const Mat &binary_warped,
                         const Mat &histogram,
                         vector<Point2f> &v_center_windows,
                         vector<Point2f> &left_pts,
                         vector<Point2f> &right_pts,
                         vector<Point2f> &mid_pts,
+                        bool &left_status,
+                        bool &right_status,
+                        bool &mid_status,
                         Mat &out_img);
     int find_midpoint(const Mat &hist, float eps);
     int find_midpoint_v1(const Mat &hist, float eps);
     double calc_mean(const Mat &hist, int x_min, int x_max);
+    void calc_center_windows(vector<Point2f> &v_center_windows,
+        vector<Point2f> &left_pts,
+        vector<Point2f> &right_pts);
 
     // ============== STAGE 4 =================
     /*
@@ -221,6 +230,9 @@ public:
     void switchto3();
     int countdown;
     int MAX_COUNTDOWN = 20;
+    int countdown_mistaken = 0;
+    int MAX_COUNTDOWN_MISTAKEN = 80;
+    void mistaken();
 
     double angle_c, angle_s;
 
@@ -247,7 +259,10 @@ private:
     // Helper functions
     double find_max(Mat img);
     double find_min(Mat img);
+    double find_maxx(vector<int> xs);
+    double find_minx(vector<int> xs);
     void show_min_max(string name ,Mat img);
+    double meanxy_of_pts(vector<Point2f> &pts, char axis);
     Point arg_max(Mat img);
     Mat sum(Mat img, char axis); // axis = 'x' or 'y'
     Mat plot_histogram(Mat hist);
@@ -269,6 +284,10 @@ private:
 
     void show_img_description(string name, const Mat &img);
     void show_mat_per(string name, const Mat &img, char dir); // dir = 'row' or 'col'
+
+    void addText(Mat &img, string text, Point2f pos);
+    string bool2str(bool b);
+
 
 public:
     void videoProcess(string video_path);

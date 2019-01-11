@@ -116,7 +116,7 @@ int main(int argc, char **argv)
     cout << "[INFO] Image Size = " << Size(carcontroller->h,carcontroller->w) << "\n";
     cout << "[INFO] OpenCV version : " << CV_VERSION << " , " << CV_MAJOR_VERSION << "\n";
     cout << "[INFO] Current dir: " << getexepath() << "\n";
-    // cout << "[INFO] Package directory " << ros::package::getPath("lane_detect") << "\n";
+    cout << "[INFO] Package directory " << ros::package::getPath("team200") << "\n";
 
     // for train SVM
     svmprocess = new SVMProcess();

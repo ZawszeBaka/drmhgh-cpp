@@ -19,6 +19,8 @@ ros/ros.h
 -
 std_msgs/Float32.h
 /home/non/Documents/ROS/drmhgh-cpp/src/team200/include/std_msgs/Float32.h
+ros/package.h
+-
 unistd.h
 -
 lanedetector.h
