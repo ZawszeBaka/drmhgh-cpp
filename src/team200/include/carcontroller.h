@@ -1,6 +1,7 @@
 #ifndef CARCONTROL_H
 #define CARCONTROL_H
 
+#include <opencv2/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
@@ -26,6 +27,8 @@ public:
     CarController(string team_name);
     ~CarController();
 
+    int is_driving = 1;
+
     string team_name;
 
     LaneDetector *lane_detector;
@@ -37,6 +40,8 @@ public:
     int h;
 
     int t=0;
+
+    VideoWriter *video;
 
     int sign;
 

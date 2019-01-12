@@ -8,14 +8,14 @@ SignRecognizer::SignRecognizer(string filepath)
       // std::cout << "[ERROR] Reading cascade file Failed ! Make sure the path exists \n";
     }
     svmprocess = new SVMProcess();
+
 }
 
 SignRecognizer::~SignRecognizer()
 {
-
 }
 
-int SignRecognizer::detect(const Mat &img, const Mat &gray_img)
+int SignRecognizer::detect(const Mat &img, const Mat &gray_img, Mat &img_with_signs)
 {
     // Rect(x,y,width,height)
     Rect haft_top(0,0,img.size().width,(int)img.size().height/2);
@@ -25,7 +25,7 @@ int SignRecognizer::detect(const Mat &img, const Mat &gray_img)
     Mat tmp_region_of_sign;
     Mat region_of_sign;
 
-    Mat img_with_signs(img);
+    img.copyTo(img_with_signs);
 
     // // Using haar cascade detection
     bool is_detected = haarcascade_detect(img, gray, s, img_with_signs);
@@ -38,7 +38,7 @@ int SignRecognizer::detect(const Mat &img, const Mat &gray_img)
         // cout << "[DEBUG] Detected region ! : " << rs << "\n";
         // region_of_sign = tmp_region_of_sign;
         // img_with_signs(Rect(0,0,region_of_sign.size().width,region_of_sign.size().height)) = region_of_sign;
-        if(rs == 0 || this->s ==0) {
+        if(rs == 0 && this->s ==0) {
             cout << "[INFO] Frame " << to_string(iframe) << " Detected left sign from " + to_string(this->s) + "\n" ;
             p_left.erase(p_left.begin());
             p_left.push_back(1);
@@ -49,7 +49,7 @@ int SignRecognizer::detect(const Mat &img, const Mat &gray_img)
                 return this->s;
             }
         } // left
-        else if(rs == 1 || this->s == 1){
+        else if(rs == 1 && this->s == 1){
             cout << "[INFO] Frame " << to_string(iframe) <<  " Detected right sign from "  + to_string(this->s) + "\n";
             p_right.erase(p_right.begin());
             p_right.push_back(1);
@@ -69,7 +69,6 @@ int SignRecognizer::detect(const Mat &img, const Mat &gray_img)
 
 
 
-
     } else {
         p_left.erase(p_left.begin());
         p_left.push_back(0);
@@ -77,7 +76,7 @@ int SignRecognizer::detect(const Mat &img, const Mat &gray_img)
         p_right.push_back(0);
     }
 
-    // cv::imshow("Sign Detection", img_with_signs);
+    cv::imshow("Sign Detection", img_with_signs);
 
     return 2; // non-sign
 }
@@ -97,7 +96,7 @@ bool SignRecognizer::haarcascade_detect(const Mat &img,
     */
     // Mat tmp;
     // resize(gray,tmp,Size(60,60));
-    sign_cascade.detectMultiScale(gray, signs, 1.1, 3, INTER_LINEAR, Size(20,20), gray.size());
+    sign_cascade.detectMultiScale(gray, signs, 1.1, 3, INTER_LINEAR, Size(25,25), gray.size());
 
     int num_detected_signs = (int) signs.size();
 

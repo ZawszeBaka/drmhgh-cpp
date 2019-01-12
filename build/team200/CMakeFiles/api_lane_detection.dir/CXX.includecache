@@ -7,6 +7,8 @@
 #IncludeRegexTransform: 
 
 /home/non/Documents/ROS/drmhgh-cpp/src/team200/include/carcontroller.h
+opencv2/core.hpp
+-
 opencv2/highgui/highgui.hpp
 -
 opencv2/imgproc/imgproc.hpp
@@ -31,6 +33,8 @@ signrecognizer.h
 /home/non/Documents/ROS/drmhgh-cpp/src/team200/include/helperfunctions.h
 
 /home/non/Documents/ROS/drmhgh-cpp/src/team200/include/lanedetector.h
+opencv2/core.hpp
+-
 opencv2/core/utility.hpp
 -
 opencv2/highgui/highgui.hpp
@@ -51,6 +55,8 @@ tracker.h
 /home/non/Documents/ROS/drmhgh-cpp/src/team200/include/tracker.h
 
 /home/non/Documents/ROS/drmhgh-cpp/src/team200/include/signrecognizer.h
+opencv2/core.hpp
+-
 opencv2/objdetect/objdetect.hpp
 -
 opencv2/highgui/highgui.hpp
@@ -83,6 +89,8 @@ ros/ros.h
 -
 
 /home/non/Documents/ROS/drmhgh-cpp/src/team200/include/tracker.h
+opencv2/core.hpp
+-
 opencv2/core/utility.hpp
 -
 opencv2/highgui/highgui.hpp

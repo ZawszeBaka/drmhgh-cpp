@@ -103,6 +103,7 @@ int main(int argc, char **argv)
     // Initialize and Activate
     ros::init(argc, argv, "image_listener");
     cv::namedWindow("Threshold", WINDOW_AUTOSIZE);
+    cv::namedWindow("Threshold2", WINDOW_AUTOSIZE);
     cv::namedWindow("RS");
     cv::startWindowThread();
 

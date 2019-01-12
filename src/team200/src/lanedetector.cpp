@@ -9,35 +9,38 @@ LaneDetector::LaneDetector() {
     cvCreateTrackbar("Mag range low", "Threshold", &mag_thresh_range[0], 300);
     cvCreateTrackbar("Mag range high", "Threshold", &mag_thresh_range[1], 300);
     cvCreateTrackbar("Color low (0)", "Threshold", &color_thresh_low[0], 255);
-    cvCreateTrackbar("Color low (1)", "Threshold", &color_thresh_low[1], 255);
-    cvCreateTrackbar("Color low (2)", "Threshold", &color_thresh_low[2], 255);
     cvCreateTrackbar("Color high (0)", "Threshold", &color_thresh_high[0], 255);
+    cvCreateTrackbar("Color low (1)", "Threshold", &color_thresh_low[1], 255);
     cvCreateTrackbar("Color high (1)", "Threshold", &color_thresh_high[1], 255);
+    cvCreateTrackbar("Color low (2)", "Threshold", &color_thresh_low[2], 255);
     cvCreateTrackbar("Color high (2)", "Threshold", &color_thresh_high[2], 255);
 
     cvCreateTrackbar("Normal speed ", "Threshold", &normal_speed, 100);
     cvCreateTrackbar("Turn speed", "Threshold", &turn_speed, 100);
 
-    cvCreateTrackbar("Margin ", "Threshold", &margin, 100);
-    cvCreateTrackbar("Window height", "Threshold", &window_height, 100);
-    cvCreateTrackbar("Min pix", "Threshold", &minpix, 100);
-    cvCreateTrackbar("Stride pix", "Threshold", &stridepix, 100);
-    cvCreateTrackbar("Begin window", "Threshold", &bwindow, 100);
-    cvCreateTrackbar("End window", "Threshold", &ewindow,30);
+    cvCreateTrackbar("Margin ", "Threshold2", &margin, 100);
+    cvCreateTrackbar("Window height", "Threshold2", &window_height, 100);
+    cvCreateTrackbar("Min pix", "Threshold2", &minpix, 100);
 
+    stridepix = non_stridepix;
+    bwindow = non_bwindow;
+    ewindow = non_ewindow;
+    cvCreateTrackbar("Stride pix", "Threshold2", &stridepix, 100);
+    cvCreateTrackbar("Begin window", "Threshold2", &bwindow, 100);
+    cvCreateTrackbar("End window", "Threshold2", &ewindow,30);
+
+    cvCreateTrackbar("And = 0,Or = 1", "Threshold2", &orr,1);
 
     // cvCreateTrackbar("MAX_COUNTDOWN", "Threshold", &MAX_COUNTDOWN, 100);
 
-    video = new VideoWriter("/home/non/Documents/Video/bi.avi",CV_FOURCC('M','J','P','G'),10, Size(w,h));
-    video2 = new VideoWriter("/home/non/Documents/Video/direction.avi",CV_FOURCC('M','J','P','G'),10, Size(w,h));
+    // video = new VideoWriter("/home/non/Documents/Video/bi.avi",CV_FOURCC('M','J','P','G'),10, Size(w,h));
 
     h_tracker = new Tracker();
     v_tracker = new Tracker();
 }
 
 LaneDetector::~LaneDetector(){
-    video->release();
-    video2->release();
+    // video->release();
 }
 
 void LaneDetector::detect(const Mat &img, const Mat &gray_img,
@@ -54,12 +57,15 @@ void LaneDetector::detect(const Mat &img, const Mat &gray_img,
     // cvtColor(, gray, COLOR_RGB2GRAY);
 
     Mat bi_grad = apply_gradient_threshold(gray);
+    plot_binary_img("Sobel Mag", bi_grad);
 
     // color threshold
-    Mat bi_color = apply_color_threshold(img);
+    // Mat bi_color = apply_color_threshold(img);
+    // plot_binary_img("Color", bi_color);
 
     // combine color and gradient thresholds !!
-    Mat combined_binary = combine_threshold(bi_grad, bi_color);
+    // Mat combined_binary = combine_threshold(bi_grad, bi_color);
+    Mat combined_binary = bi_grad;
 
     // warping
     Mat binary_warped = warp(combined_binary);
@@ -148,6 +154,7 @@ void LaneDetector::detect(const Mat &img, const Mat &gray_img,
                 mistaken();
             }
         }else{
+          switchto2();
             mistaken();
         }
     }
@@ -204,7 +211,7 @@ void LaneDetector::detect(const Mat &img, const Mat &gray_img,
 
     putText(out_img, to_string(turn_state), Point2f(5,30), FONT_HERSHEY_PLAIN, 2,  Scalar(255,0,255));
     imshow("RS", out_img);
-    video->write(out_img);
+    // video->write(out_img);
     speed = calc_speed(v_center_windows,left_pts,right_pts);
 
 }
@@ -440,7 +447,13 @@ Mat LaneDetector::apply_color_threshold(const Mat &img)
 Mat LaneDetector::combine_threshold(const Mat &s_binary,
                       const Mat &combined)
 {
-    Mat rs = (s_binary | combined);
+    Mat rs;
+    if(orr == 1){
+        rs = (s_binary | combined);
+    }else{
+        rs = (s_binary & combined);
+    }
+
     return rs ;
 }
 
@@ -449,7 +462,7 @@ Mat LaneDetector::get_histogram(const Mat &binary_warped)
 {
     int width = binary_warped.cols;
     int height = binary_warped.rows;
-    Mat haft = binary_warped(Range(round(height/2), height), Range(0,width)); // row range, col range
+    Mat haft = binary_warped(Range(round(height/3*2), round(height/5*4)), Range(0,width)); // row range, col range
     // plot_binary_img("haft", haft);
     Mat histogram = sum(haft,'x');
 
@@ -1146,13 +1159,13 @@ bool LaneDetector::slide_window_v3(const Mat &binary_warped,
     }
 
     // check window status
-    if(count_mid_wins>=ewindow-bwindow-1)mid_status = true;
+    if(count_mid_wins>=ewindow-bwindow-2)mid_status = true;
     else mid_status = false;
 
-    if(count_left_wins>=ewindow-bwindow-1)left_status= true;
+    if(count_left_wins>=ewindow-bwindow-2)left_status= true;
     else left_status = false;
 
-    if(count_right_wins>=ewindow-bwindow-1)right_status = true;
+    if(count_right_wins>=ewindow-bwindow-2)right_status = true;
     else right_status= false;
 
     addText(out_img, "LEFT : " + bool2str(left_status), Point2f(5,70));
@@ -2091,31 +2104,4 @@ void LaneDetector::show_mat_per(string name, const Mat &img, char dir)
     // {
     //     Range(round(height/2), height), Range(0,width)
     // }
-}
-
-void LaneDetector::videoProcess(string video_path)
-{
-
-    VideoCapture video(video_path);
-
-    Mat img;
-    Mat gray;
-    cvtColor(img, gray,COLOR_RGB2GRAY);
-    double angle=0, speed=-1;
-    int iframe = 0;
-
-    while (true)
-    {
-        video >> img;
-        std::cout << " [INFO] Frame number " << iframe << "\n";
-        if (img.empty()) {
-            break;
-        }
-        imshow("View", img);
-        waitKey(10);
-        this->detect(img, gray,angle, speed);
-        std::cout << " [INFO] angle = " << angle << ", speed =" << speed << "\n";
-
-        iframe++;
-    }
 }

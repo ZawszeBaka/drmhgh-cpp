@@ -1,6 +1,7 @@
 #ifndef DETECTLANE_H
 #define DETECTLANE_H
 
+#include <opencv2/core.hpp>
 #include <opencv2/core/utility.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -34,9 +35,11 @@ public:
     double cur_speed=0; // current speed of the car
 
     // tracker
-    bool IS_TRACKING = false;
+    bool IS_TRACKING = true;
     Tracker *h_tracker;
     Tracker *v_tracker;
+
+    int orr = 1;
 
     /*
     Width and height of input image , which is fixed size !
@@ -200,7 +203,7 @@ public:
     double marg;
 
     int turn_speed = 30; // speed when turning
-    int normal_speed = 40; // speed when driving
+    int normal_speed = 35; // speed when driving
 
     // just for trackbar
     static void change_turn_speed(int,void*);
@@ -230,7 +233,7 @@ public:
     int MAX_COUNTDOWN_MISTAKEN = 80;
     void mistaken();
     int tracking_countdown;
-    int MAX_TRACKING_COUNTDOWN = 6;
+    int MAX_TRACKING_COUNTDOWN = 20;
     void keep_tracking();
 
     double angle_c, angle_s;

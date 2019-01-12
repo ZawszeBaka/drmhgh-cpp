@@ -90,7 +90,7 @@ team200_EXTERNAL_OBJECTS =
 
 /home/non/Documents/ROS/drmhgh-cpp/devel/lib/team200/team200: team200/CMakeFiles/team200.dir/src/main.cpp.o
 /home/non/Documents/ROS/drmhgh-cpp/devel/lib/team200/team200: team200/CMakeFiles/team200.dir/build.make
-/home/non/Documents/ROS/drmhgh-cpp/devel/lib/team200/team200: /home/non/Documents/ROS/drmhgh-cpp/devel/lib/libapi_lane_detection.so
+/home/non/Documents/ROS/drmhgh-cpp/devel/lib/team200/team200: /home/non/Documents/ROS/drmhgh-cpp/devel/lib/libteam200_lib.so
 /home/non/Documents/ROS/drmhgh-cpp/devel/lib/team200/team200: /opt/ros/lunar/lib/libcv_bridge.so
 /home/non/Documents/ROS/drmhgh-cpp/devel/lib/team200/team200: /opt/ros/lunar/lib/x86_64-linux-gnu/libopencv_core3.so.3.3.1
 /home/non/Documents/ROS/drmhgh-cpp/devel/lib/team200/team200: /opt/ros/lunar/lib/x86_64-linux-gnu/libopencv_imgproc3.so.3.3.1

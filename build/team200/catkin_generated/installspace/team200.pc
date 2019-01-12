@@ -4,5 +4,5 @@ Name: team200
 Description: Description of team200
 Version: 0.0.0
 Cflags: -I/home/non/Documents/ROS/drmhgh-cpp/install/include
-Libs: -L/home/non/Documents/ROS/drmhgh-cpp/install/lib -lapi_lane_detection
+Libs: -L/home/non/Documents/ROS/drmhgh-cpp/install/lib -lteam200_lib
 Requires: roscpp

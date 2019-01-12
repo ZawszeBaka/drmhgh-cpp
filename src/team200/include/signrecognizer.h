@@ -1,6 +1,7 @@
 #ifndef SIGNRECOGNIZER_H
 #define SIGNRECOGNIZER_H
 
+#include <opencv2/core.hpp>
 #include <opencv2/objdetect/objdetect.hpp>
 // #include <opencv2/objdetect/detection_based_tracker.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -23,10 +24,10 @@ public:
     SVMProcess *svmprocess;
     int iframe = 0;
 
-    int detect(const Mat &img, const Mat &gray_img);
+    int detect(const Mat &img, const Mat &gray_img, Mat &img_with_signs);
 
-    vector<int> p_left {{0,0,0,0,0,0,0,0,0}};
-    vector<int> p_right {{0,0,0,0,0,0,0,0,0}};
+    vector<int> p_left {{0,0,0,0,0,0,0,0,0,0}};
+    vector<int> p_right {{0,0,0,0,0,0,0,0,0,0}};
 
     int freq_left = 0;
     int freq_right = 0;

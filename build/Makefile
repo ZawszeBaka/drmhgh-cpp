@@ -335,19 +335,6 @@ team200/fast:
 .PHONY : team200/fast
 
 #=============================================================================
-# Target rules for targets named api_lane_detection
-
-# Build rule for target.
-api_lane_detection: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 api_lane_detection
-.PHONY : api_lane_detection
-
-# fast build rule for target.
-api_lane_detection/fast:
-	$(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/build
-.PHONY : api_lane_detection/fast
-
-#=============================================================================
 # Target rules for targets named geometry_msgs_generate_messages_eus
 
 # Build rule for target.
@@ -372,6 +359,19 @@ roscpp_generate_messages_cpp: cmake_check_build_system
 roscpp_generate_messages_cpp/fast:
 	$(MAKE) -f team200/CMakeFiles/roscpp_generate_messages_cpp.dir/build.make team200/CMakeFiles/roscpp_generate_messages_cpp.dir/build
 .PHONY : roscpp_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named team200_lib
+
+# Build rule for target.
+team200_lib: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 team200_lib
+.PHONY : team200_lib
+
+# fast build rule for target.
+team200_lib/fast:
+	$(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/build
+.PHONY : team200_lib/fast
 
 #=============================================================================
 # Target rules for targets named geometry_msgs_generate_messages_py
@@ -659,9 +659,9 @@ help:
 	@echo "... geometry_msgs_generate_messages_nodejs"
 	@echo "... std_msgs_generate_messages_py"
 	@echo "... team200"
-	@echo "... api_lane_detection"
 	@echo "... geometry_msgs_generate_messages_eus"
 	@echo "... roscpp_generate_messages_cpp"
+	@echo "... team200_lib"
 	@echo "... geometry_msgs_generate_messages_py"
 	@echo "... sensor_msgs_generate_messages_cpp"
 	@echo "... sensor_msgs_generate_messages_lisp"

@@ -226,21 +226,6 @@ team200/fast:
 .PHONY : team200/fast
 
 # Convenience name for target.
-team200/CMakeFiles/api_lane_detection.dir/rule:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f CMakeFiles/Makefile2 team200/CMakeFiles/api_lane_detection.dir/rule
-.PHONY : team200/CMakeFiles/api_lane_detection.dir/rule
-
-# Convenience name for target.
-api_lane_detection: team200/CMakeFiles/api_lane_detection.dir/rule
-
-.PHONY : api_lane_detection
-
-# fast build rule for target.
-api_lane_detection/fast:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/build
-.PHONY : api_lane_detection/fast
-
-# Convenience name for target.
 team200/CMakeFiles/geometry_msgs_generate_messages_eus.dir/rule:
 	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f CMakeFiles/Makefile2 team200/CMakeFiles/geometry_msgs_generate_messages_eus.dir/rule
 .PHONY : team200/CMakeFiles/geometry_msgs_generate_messages_eus.dir/rule
@@ -269,6 +254,21 @@ roscpp_generate_messages_cpp: team200/CMakeFiles/roscpp_generate_messages_cpp.di
 roscpp_generate_messages_cpp/fast:
 	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/roscpp_generate_messages_cpp.dir/build.make team200/CMakeFiles/roscpp_generate_messages_cpp.dir/build
 .PHONY : roscpp_generate_messages_cpp/fast
+
+# Convenience name for target.
+team200/CMakeFiles/team200_lib.dir/rule:
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f CMakeFiles/Makefile2 team200/CMakeFiles/team200_lib.dir/rule
+.PHONY : team200/CMakeFiles/team200_lib.dir/rule
+
+# Convenience name for target.
+team200_lib: team200/CMakeFiles/team200_lib.dir/rule
+
+.PHONY : team200_lib
+
+# fast build rule for target.
+team200_lib/fast:
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/build
+.PHONY : team200_lib/fast
 
 # Convenience name for target.
 team200/CMakeFiles/geometry_msgs_generate_messages_py.dir/rule:
@@ -576,7 +576,7 @@ src/carcontroller.o: src/carcontroller.cpp.o
 
 # target to build an object file
 src/carcontroller.cpp.o:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.o
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/carcontroller.cpp.o
 .PHONY : src/carcontroller.cpp.o
 
 src/carcontroller.i: src/carcontroller.cpp.i
@@ -585,7 +585,7 @@ src/carcontroller.i: src/carcontroller.cpp.i
 
 # target to preprocess a source file
 src/carcontroller.cpp.i:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.i
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/carcontroller.cpp.i
 .PHONY : src/carcontroller.cpp.i
 
 src/carcontroller.s: src/carcontroller.cpp.s
@@ -594,7 +594,7 @@ src/carcontroller.s: src/carcontroller.cpp.s
 
 # target to generate assembly for a file
 src/carcontroller.cpp.s:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/carcontroller.cpp.s
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/carcontroller.cpp.s
 .PHONY : src/carcontroller.cpp.s
 
 src/helperfunctions.o: src/helperfunctions.cpp.o
@@ -603,7 +603,7 @@ src/helperfunctions.o: src/helperfunctions.cpp.o
 
 # target to build an object file
 src/helperfunctions.cpp.o:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/helperfunctions.cpp.o
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/helperfunctions.cpp.o
 .PHONY : src/helperfunctions.cpp.o
 
 src/helperfunctions.i: src/helperfunctions.cpp.i
@@ -612,7 +612,7 @@ src/helperfunctions.i: src/helperfunctions.cpp.i
 
 # target to preprocess a source file
 src/helperfunctions.cpp.i:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/helperfunctions.cpp.i
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/helperfunctions.cpp.i
 .PHONY : src/helperfunctions.cpp.i
 
 src/helperfunctions.s: src/helperfunctions.cpp.s
@@ -621,7 +621,7 @@ src/helperfunctions.s: src/helperfunctions.cpp.s
 
 # target to generate assembly for a file
 src/helperfunctions.cpp.s:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/helperfunctions.cpp.s
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/helperfunctions.cpp.s
 .PHONY : src/helperfunctions.cpp.s
 
 src/lanedetector.o: src/lanedetector.cpp.o
@@ -630,7 +630,7 @@ src/lanedetector.o: src/lanedetector.cpp.o
 
 # target to build an object file
 src/lanedetector.cpp.o:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.o
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/lanedetector.cpp.o
 .PHONY : src/lanedetector.cpp.o
 
 src/lanedetector.i: src/lanedetector.cpp.i
@@ -639,7 +639,7 @@ src/lanedetector.i: src/lanedetector.cpp.i
 
 # target to preprocess a source file
 src/lanedetector.cpp.i:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.i
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/lanedetector.cpp.i
 .PHONY : src/lanedetector.cpp.i
 
 src/lanedetector.s: src/lanedetector.cpp.s
@@ -648,7 +648,7 @@ src/lanedetector.s: src/lanedetector.cpp.s
 
 # target to generate assembly for a file
 src/lanedetector.cpp.s:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/lanedetector.cpp.s
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/lanedetector.cpp.s
 .PHONY : src/lanedetector.cpp.s
 
 src/main.o: src/main.cpp.o
@@ -684,7 +684,7 @@ src/signrecognizer.o: src/signrecognizer.cpp.o
 
 # target to build an object file
 src/signrecognizer.cpp.o:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.o
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/signrecognizer.cpp.o
 .PHONY : src/signrecognizer.cpp.o
 
 src/signrecognizer.i: src/signrecognizer.cpp.i
@@ -693,7 +693,7 @@ src/signrecognizer.i: src/signrecognizer.cpp.i
 
 # target to preprocess a source file
 src/signrecognizer.cpp.i:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.i
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/signrecognizer.cpp.i
 .PHONY : src/signrecognizer.cpp.i
 
 src/signrecognizer.s: src/signrecognizer.cpp.s
@@ -702,7 +702,7 @@ src/signrecognizer.s: src/signrecognizer.cpp.s
 
 # target to generate assembly for a file
 src/signrecognizer.cpp.s:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/signrecognizer.cpp.s
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/signrecognizer.cpp.s
 .PHONY : src/signrecognizer.cpp.s
 
 src/svmprocess.o: src/svmprocess.cpp.o
@@ -711,7 +711,7 @@ src/svmprocess.o: src/svmprocess.cpp.o
 
 # target to build an object file
 src/svmprocess.cpp.o:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/svmprocess.cpp.o
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/svmprocess.cpp.o
 .PHONY : src/svmprocess.cpp.o
 
 src/svmprocess.i: src/svmprocess.cpp.i
@@ -720,7 +720,7 @@ src/svmprocess.i: src/svmprocess.cpp.i
 
 # target to preprocess a source file
 src/svmprocess.cpp.i:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/svmprocess.cpp.i
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/svmprocess.cpp.i
 .PHONY : src/svmprocess.cpp.i
 
 src/svmprocess.s: src/svmprocess.cpp.s
@@ -729,7 +729,7 @@ src/svmprocess.s: src/svmprocess.cpp.s
 
 # target to generate assembly for a file
 src/svmprocess.cpp.s:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/svmprocess.cpp.s
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/svmprocess.cpp.s
 .PHONY : src/svmprocess.cpp.s
 
 src/tracker.o: src/tracker.cpp.o
@@ -738,7 +738,7 @@ src/tracker.o: src/tracker.cpp.o
 
 # target to build an object file
 src/tracker.cpp.o:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/tracker.cpp.o
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/tracker.cpp.o
 .PHONY : src/tracker.cpp.o
 
 src/tracker.i: src/tracker.cpp.i
@@ -747,7 +747,7 @@ src/tracker.i: src/tracker.cpp.i
 
 # target to preprocess a source file
 src/tracker.cpp.i:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/tracker.cpp.i
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/tracker.cpp.i
 .PHONY : src/tracker.cpp.i
 
 src/tracker.s: src/tracker.cpp.s
@@ -756,7 +756,7 @@ src/tracker.s: src/tracker.cpp.s
 
 # target to generate assembly for a file
 src/tracker.cpp.s:
-	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/api_lane_detection.dir/build.make team200/CMakeFiles/api_lane_detection.dir/src/tracker.cpp.s
+	cd /home/non/Documents/ROS/drmhgh-cpp/build && $(MAKE) -f team200/CMakeFiles/team200_lib.dir/build.make team200/CMakeFiles/team200_lib.dir/src/tracker.cpp.s
 .PHONY : src/tracker.cpp.s
 
 # Help Target
@@ -775,9 +775,9 @@ help:
 	@echo "... geometry_msgs_generate_messages_nodejs"
 	@echo "... std_msgs_generate_messages_py"
 	@echo "... team200"
-	@echo "... api_lane_detection"
 	@echo "... geometry_msgs_generate_messages_eus"
 	@echo "... roscpp_generate_messages_cpp"
+	@echo "... team200_lib"
 	@echo "... geometry_msgs_generate_messages_py"
 	@echo "... sensor_msgs_generate_messages_cpp"
 	@echo "... sensor_msgs_generate_messages_lisp"

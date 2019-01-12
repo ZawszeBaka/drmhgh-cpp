@@ -371,6 +371,9 @@ team200_BINARY_DIR:STATIC=/home/non/Documents/ROS/drmhgh-cpp/build/team200
 //Value Computed by CMake
 team200_SOURCE_DIR:STATIC=/home/non/Documents/ROS/drmhgh-cpp/src/team200
 
+//Dependencies for target
+team200_lib_LIB_DEPENDS:STATIC=
+
 //The directory containing a CMake configuration file for xmlrpcpp.
 xmlrpcpp_DIR:PATH=/opt/ros/lunar/share/xmlrpcpp/cmake
 

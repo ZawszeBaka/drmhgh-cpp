@@ -17,7 +17,7 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES api_lane_detection
+  LIBRARIES team200_lib
   CATKIN_DEPENDS roscpp
   DEPENDS system_lib
 )
@@ -27,7 +27,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_library(api_lane_detection
+add_library(team200_lib
   src/lanedetector.cpp
   src/carcontroller.cpp
   src/signrecognizer.cpp
@@ -42,13 +42,13 @@ add_dependencies(team200 ${catkin_EXPORTED_TARGETS})
 
 target_link_libraries(
   team200
-  api_lane_detection
+  team200_lib
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
   ${Boost_LIBRARIES}
 )
 
-#install(TARGETS api_lane_detection ${ADDITIONAL_EXECUTABLES}
+#install(TARGETS team200_lib ${ADDITIONAL_EXECUTABLES}
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

@@ -7,7 +7,7 @@ SVMProcess::SVMProcess()
     // svm->setKernel(SVM::LINEAR);
     // svm->setTermCriteria(TermCriteria(TermCriteria::MAX_ITER, 100, 1e-6));
 
-    svm = Algorithm::load<SVM>("/home/non/Documents/data/train_svm/model/out.xml");
+    svm = Algorithm::load<SVM>(ros::package::getPath("team200") + "/cascade/out.xml");
 
     /*
       Size winSize

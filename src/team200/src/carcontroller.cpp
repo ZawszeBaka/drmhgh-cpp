@@ -35,26 +35,39 @@ CarController::CarController(string team_name)
 
     // STAGE 2 :
     lane_detector->sobel_kernel = 3;
-    lane_detector->abs_sobel_thresh_range_x = {20,100};
-    lane_detector->abs_sobel_thresh_range_y = {20,100};
+    lane_detector->abs_sobel_thresh_range_x = {19,252};
+    lane_detector->abs_sobel_thresh_range_y = {20,222};
     lane_detector->mag_thresh_range = {30,100};
     lane_detector->dir_thresh_range = {0.7,1.3};
     lane_detector->color_thresh_low = {102,63,63}; // bgr
     lane_detector->color_thresh_high = {255,170,170};
+    // lane_detector->color_thresh_high = {170,170,170};
+
     // lane_detector->color_thresh_low = {180,180,200}; // bgr
     // lane_detector->color_thresh_high = {255,255,255};
 
     // STAGE 3 :
     // lane_detector->nwindows = lane_detector->non_nwindows;
-    lane_detector->stridepix = lane_detector->non_stridepix;
-    lane_detector->bwindow = lane_detector->non_bwindow;
-    lane_detector->ewindow = lane_detector->non_ewindow;
+    // lane_detector->stridepix = lane_detector->non_stridepix;
+    // lane_detector->bwindow = lane_detector->non_bwindow;
+    // lane_detector->ewindow = lane_detector->non_ewindow;
 
+    // left_sign_recognizer->threshold_freq = 2;
+    // right_sign_recognizer->threshold_freq = 2;
+
+    cvCreateTrackbar("Left freq count", "Threshold", &(left_sign_recognizer->threshold_freq), 30);
+    cvCreateTrackbar("right freq count", "Threshold", &(right_sign_recognizer->threshold_freq), 30);
+
+    cvCreateTrackbar("Driving ?", "Threshold", &(is_driving), 1);
+
+    // video = new VideoWriter("/home/non/Documents/Video/direction.avi",
+    //                           CV_FOURCC('M','J','P','G'),10, Size(w,h));
 
 }
 
 CarController::~CarController()
 {
+    // video->release();
     cv::destroyAllWindows();
 }
 
@@ -92,6 +105,8 @@ void CarController::main_processing(const Mat &img)
     // lane detection
     lane_detector->detect(img, gray, angle, speed);
 
+    Mat img_with_signs;
+
     t++; // make sure t is 0 and 1
     t = t%2;
     if(t==0){
@@ -100,20 +115,21 @@ void CarController::main_processing(const Mat &img)
       right_sign_recognizer->iframe++;
       if(lane_detector->turn_state == 0 ||
          lane_detector->turn_state == 10){ // non-sign
-          sign = left_sign_recognizer->detect(img,gray);
+          sign = left_sign_recognizer->detect(img,gray,img_with_signs);
           if (sign!=2){
               lane_detector->switchto1(sign);
           }else{
-            sign = right_sign_recognizer->detect(img,gray);
+            sign = right_sign_recognizer->detect(img,gray,img_with_signs);
             if (sign!=2){
               lane_detector->switchto1(sign);
             }
           }
       }
+      // video->write(img_with_signs);
     }
 
     // cout << "[] color high " << lane_detector->color_thresh_high[0] << "\n";
 
-    // driverCar(angle, speed);
+    if(is_driving==1) driverCar(angle, speed);
     // cv::waitKey(1);
 }
